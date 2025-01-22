@@ -1,5 +1,6 @@
 package agh.ics.oop.model;
 
+
 import javax.swing.text.Position;
 import java.util.ArrayList;
 import java.util.Collections;
