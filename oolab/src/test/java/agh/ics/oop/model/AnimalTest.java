@@ -14,7 +14,7 @@ class AnimalTest {
 
     @Test
     void generateRandomGenome() {
-        List<Integer> randomGenome = generateRandomGenom(10);
+        List<Integer> randomGenome = Animal.generateRandomGenome(10);
         System.out.println(randomGenome);
     }
     // hmm it's random so difficult to test but it works

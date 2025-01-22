@@ -1,5 +1,7 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.enums.MapDirection;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -24,7 +26,7 @@ public class Animal {
         this.coordinate = coordinate;
         this.energy = STARTING_ENERGY;
         this.age = 0;
-        this.genome = generateRandomGenom(GENOM_SIZE);
+        this.genome = generateRandomGenome(GENOM_SIZE);
         this.activeGene = 0;
     }
     // Animal constructor for mating
@@ -34,6 +36,7 @@ public class Animal {
         this.energy = energy;
         this.genome = genome;
         this.age =0;
+        this.activeGene = activateRandomGene();
     }
 
     public Vector2d getPosition() {
@@ -52,7 +55,7 @@ public class Animal {
 
 
 
-    public static List<Integer>  generateRandomGenom(int size) {
+    public static List<Integer>  generateRandomGenome(int size) {
         List<Integer> genom = new ArrayList<>();
         for(int i = 0; i < size; i++) {
             genom.add((int)(Math.random() * 8));
@@ -105,6 +108,10 @@ public class Animal {
 
     public static MapDirection randomDirection(){
         return MapDirection.values()[(int)(Math.random() * MapDirection.values().length)];
+    }
+
+    private int activateRandomGene() {
+        return (int)(Math.random()*GENOM_SIZE);
     }
 
     private int calculateEnergyBreedingLoss(){
