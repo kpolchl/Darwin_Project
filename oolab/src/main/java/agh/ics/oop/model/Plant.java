@@ -11,4 +11,10 @@ public class Plant {
         return position;
     }
 
+    @Override
+    public String toString() {
+        return "*";
+    }
+
+
 }
