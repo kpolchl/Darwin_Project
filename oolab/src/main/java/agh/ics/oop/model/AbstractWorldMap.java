@@ -1,34 +1,75 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.animal.Animal;
+import agh.ics.oop.model.animal.Breeding;
 import agh.ics.oop.model.exceptions.IncorrectPositionException;
 
-import java.net.CookieHandler;
-import java.util.HashMap;
+import java.util.*;
+
+import static agh.ics.oop.model.Plant.getPlantEnergy;
+
+///
+/// breeding
+/// 1. dodaje z listy animali do hashmapy
+/// 2 . jako że posortowane po energii to przy wkładaniu
+/// 3 rozmnarzaj po dwa
+/// 4 dodaje na pole dziecko
+/// 5 wchodzi więcej i huj nic tej logiki nie musimy mieć
 
 public abstract class AbstractWorldMap {
     protected Vector2d MIN_COORD;
     protected Vector2d MAX_COORD;
-    protected int width;
-    protected  HashMap<Vector2d,Animal> AnimalMap;
-    protected HashMap<Vector2d,Grass> GrassMap;
+    protected HashMap<Vector2d, List<Animal>> animalMap; // to track moves and breeding
+    protected List<Animal> animalList;  // list of all animals on the map should be sorted by energy
+    protected List<Animal> children; // temp list only for one day
+    protected HashMap<Vector2d,Plant> plantMap;
+    protected final Breeding breeding = new Breeding(2,20); // temp do zmiany
 
-    public AbstractWorldMap(Vector2d MAX_COORD, HashMap<Vector2d,Animal> Animals) {
+    public AbstractWorldMap(Vector2d MAX_COORD, List<Animal> animals) {
         this.MIN_COORD = new Vector2d(0,0);
         this.MAX_COORD = MAX_COORD;
-        this.AnimalMap = Animals;
+        this.animalMap = new HashMap<>();
+        for (Animal animal : animals) {
+            this.animalMap.computeIfAbsent(animal.getPosition(), k -> new ArrayList<>()).add(animal); // do stestowania bo nie wierzę że to działa
+        }
+
     }
+
     abstract void grassGrow();
 
 
-    // probably will change
-    protected boolean putAnimal(Vector2d pos, Animal animal) throws IncorrectPositionException {
-        if(inBounds(pos)){
-            AnimalMap.put(pos, animal);
-            return true;
+    protected void eatBreedPlace(Animal animal){
+
+        // eating
+        if (plantMap.containsKey(animal.getPosition())){
+            animal.setEnergy(animal.getEnergy()+getPlantEnergy());
+            plantMap.remove(animal.getPosition());
         }
-        throw new IncorrectPositionException(pos);
+
+        //breeding
+        if(animalMap.containsKey(animal.getPosition()) && animalMap.get(animal.getPosition()).size() == 1){
+
+            Optional<Animal> firstAnimal = Optional.ofNullable(animalMap.get(animal.getPosition())) // nw też do stestowania na pewno
+                    .filter(list -> !list.isEmpty())
+                    .map(List::getFirst);
+
+            // place child
+            if(firstAnimal.isPresent()){
+                Animal child = breeding.breed(firstAnimal.get(),animal);
+                animalMap.computeIfAbsent(child.getPosition(), k -> new ArrayList<>()).add(child); // do stestowania bo nie wierzę że to działa
+
+                children.add(child);
+            }
+            //place animal
+            animalMap.computeIfAbsent(animal.getPosition(), k -> new ArrayList<>()).add(animal); // do stestowania bo nie wierzę że to działa
+        }
+        //place animal
+        else{
+            animalMap.computeIfAbsent(animal.getPosition(), k -> new ArrayList<>()).add(animal); // do stestowania bo nie wierzę że to działa
+        }
+
     }
-    
+
     protected boolean inBounds(Vector2d pos) {
         return pos.follows(MIN_COORD) && pos.precedes(MAX_COORD);
     }
@@ -61,12 +102,22 @@ public abstract class AbstractWorldMap {
         else if(exitOnRight(CordAfterMove)) {
             CordAfterMove.setX(MIN_COORD.getX());
         }
-
-        AnimalMap.remove(animal.getPosition());
         animal.move(CordAfterMove);
-        AnimalMap.put(animal.getPosition(), animal);
     }
+    ///
+    /// Move
+    /// sort
+    /// place
+    /// eat
+    /// breed
+    protected void moveAnimalsOnMap() { // ta logika jest troche upośledzona dlaczego nie dodaje od razu przy ruchu trawy ale huj nie ruszam już przy testach się zobaczy czy działa tak jak miało
 
+        animalList.forEach(this::move); // move all animals
 
+        animalList.sort(Comparator.comparingInt(Animal::getEnergy).reversed()); // sort animal by energy
+
+        animalList.forEach(this::eatBreedPlace); // place on map and eat
+
+    }
 
 }

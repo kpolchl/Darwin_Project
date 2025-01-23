@@ -1,14 +1,12 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.animal.Animal;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
-import static agh.ics.oop.model.Animal.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static agh.ics.oop.model.animal.Animal.*;
 
 class AnimalTest {
 
