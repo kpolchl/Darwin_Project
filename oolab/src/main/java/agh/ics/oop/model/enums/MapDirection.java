@@ -63,4 +63,16 @@ public enum MapDirection {
             case NORTH_WEST -> new Vector2d(-1,1);
         };
     }
+    public MapDirection opposite(){
+        return switch(this){
+            case NORTH -> SOUTH;
+            case NORTH_EAST -> SOUTH_WEST;
+            case EAST -> WEST;
+            case SOUTH_EAST -> NORTH_WEST;
+            case SOUTH -> NORTH;
+            case SOUTH_WEST -> NORTH_EAST;
+            case WEST -> EAST;
+            case NORTH_WEST -> SOUTH_WEST;
+        };
+    }
 }

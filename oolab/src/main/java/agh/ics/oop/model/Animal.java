@@ -47,6 +47,10 @@ public class Animal {
         return this.direction;
     }
 
+    public void setDirection(MapDirection direction) {
+        this.direction = direction;
+    }
+
     public List<Integer> getGenome() {
         return genome;
     }
@@ -129,16 +133,38 @@ public class Animal {
         }
     }
 
-    public String toString(){
-        return  this.direction.toString() ;
-    }
-
     private boolean isAt(Vector2d position) {
         return this.coordinate.equals(position);
     }
 
-    public void move(){
-        this.coordinate.add(this.direction.toUnitVector());
+    public String toString(){
+        return this.direction.toString() ;
+    }
+
+    /// poruszanie się
+    /// 1. obrót aktywnygen
+    /// 2. ruch
+    /// 3. aktualizuj aktywny gen
+
+
+
+    public MapDirection calculateSpinAnimal(){
+        return MapDirection.values()[(this.direction.ordinal()+this.activeGene)%8];
+    }
+
+    private void spinAnimal(){
+        this.direction = calculateSpinAnimal();
+    }
+
+    // calculates animal move for world map
+    public Vector2d calculateMove() {
+        MapDirection direction = calculateSpinAnimal();
+        return this.coordinate.add(direction.toUnitVector());
+    }
+
+    // moves animal to coordinate decided in abstractWorldMap logic
+    public void move(Vector2d worldPosition) {
+        this.coordinate = worldPosition;
         this.energy -= ENERGY_LOSS;
         updateActiveGene();
         }
