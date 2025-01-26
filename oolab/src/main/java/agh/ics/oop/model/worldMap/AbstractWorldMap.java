@@ -29,6 +29,9 @@ public abstract class AbstractWorldMap {
     protected final Breeding breeding = new Breeding(2,20); // temp do zmiany
     protected List<MapChangeListener> observers = new ArrayList<>();
 
+    protected List<Vector2d> PREFERED_POSITIONS;
+    protected List<Vector2d> LESS_PREFERED_POSITIONS;
+
 
     public AbstractWorldMap(Vector2d MAX_COORD, List<Animal> animals) {
         this.MIN_COORD = new Vector2d(0,0);
@@ -43,6 +46,10 @@ public abstract class AbstractWorldMap {
 
 
     abstract void grassGrow(int N);
+    // handle grass growth per day
+    protected abstract void plantGrow(int N);
+
+    protected abstract void eatPlant(Vector2d pos);
 
 
     public void addObserver(MapChangeListener observer) {
@@ -65,6 +72,7 @@ public abstract class AbstractWorldMap {
         if (plantMap.containsKey(animal.getPosition())){
             animal.setEnergy(animal.getEnergy()+getPlantEnergy());
             plantMap.remove(animal.getPosition());
+            eatPlant(animal.getPosition()); // handles adding cord for generating plants
         }
 
         //breeding
