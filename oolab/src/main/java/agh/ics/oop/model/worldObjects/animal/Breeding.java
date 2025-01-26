@@ -20,7 +20,7 @@ public class Breeding {
         return animal.getEnergy()>BREEDING_ENERGY;
     }
 
-    private int calculateEnergyBreedingLoss(Animal animal) {
+    public int calculateEnergyBreedingLoss(Animal animal) {
         return (animal.getEnergy()-1)/ENERGY_PARTITION+1; // custom ceil function found on stack overflow
     }
     private int energyAfterBreeding(Animal animal) {
