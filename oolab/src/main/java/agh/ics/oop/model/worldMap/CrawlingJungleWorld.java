@@ -32,7 +32,7 @@ public class CrawlingJungleWorld extends AbstractWorldMap {
                 if (dx == 0 && dy == 0) continue;
 
                 Vector2d newPosition = new Vector2d(position.getX() + dx, position.getY() + dy);
-                if (plantMap.get(newPosition) == null && newPosition.precedes(MIN_COORD) && newPosition.follows(MIN_COORD) && !PREFERED_POSITIONS.contains(newPosition)) {
+                if (plantMap.get(newPosition) == null && newPosition.precedes(MAX_COORD) && newPosition.follows(MIN_COORD) && !PREFERED_POSITIONS.contains(newPosition)) {
                     PREFERED_POSITIONS.add(newPosition);
                 }
             }
@@ -63,14 +63,14 @@ public class CrawlingJungleWorld extends AbstractWorldMap {
         double parrettNum =0.8;
         int i =0;
         Random rand = new Random();
-        while (i < (int) PLANTS_PER_DAY*parrettNum) {
+        while (i < (int) PLANTS_PER_DAY*parrettNum && !LESS_PREFERED_POSITIONS.isEmpty() ) {
             if(PREFERED_POSITIONS.isEmpty()) {
                 Vector2d newPlantPos = LESS_PREFERED_POSITIONS.get(rand.nextInt(LESS_PREFERED_POSITIONS.size()));
                 plantMap.put(newPlantPos, new Plant(newPlantPos));
                 LESS_PREFERED_POSITIONS.remove(newPlantPos);
                 addPreferredPositions(newPlantPos);
             }
-            else {
+            else{
                 Vector2d newPlantPos = PREFERED_POSITIONS.get(rand.nextInt(PREFERED_POSITIONS.size()));
                 PREFERED_POSITIONS.remove(newPlantPos);
                 plantMap.put(newPlantPos, new Plant(newPlantPos));
@@ -78,7 +78,7 @@ public class CrawlingJungleWorld extends AbstractWorldMap {
             }
             i++;
         }
-        while( i <PLANTS_PER_DAY){
+        while( i <PLANTS_PER_DAY && !LESS_PREFERED_POSITIONS.isEmpty()) {
             Vector2d newPlantPos = PREFERED_POSITIONS.get(rand.nextInt(PREFERED_POSITIONS.size()));
             PREFERED_POSITIONS.remove(newPlantPos);
             plantMap.put(newPlantPos, new Plant(newPlantPos));
