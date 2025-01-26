@@ -129,4 +129,14 @@ public abstract class AbstractWorldMap {
 
     }
 
+    protected void deleteDeadAnimals() {
+        int N = animalList.size();
+        for (int i = N-1; i < N; i++) {
+            if (animalList.get(i).getEnergy() <=0 ) {
+                animalList.remove(i);
+            }
+            if
+        }
+    }
+
 }
