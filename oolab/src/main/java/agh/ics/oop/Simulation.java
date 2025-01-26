@@ -4,7 +4,7 @@ import agh.ics.oop.model.utils.Vector2d;
 import agh.ics.oop.model.worldMap.AbstractWorldMap;
 import agh.ics.oop.records.WorldConfiguration;
 
-public class Simulation {
+//public class Simulation {
 //    wysokość i szerokość mapy,
 //    wariant mapy (wyjaśnione w sekcji poniżej),
 //    startowa liczba roślin,
@@ -19,17 +19,19 @@ public class Simulation {
 //    wariant mutacji (wyjaśnione w sekcji poniżej),
 //    długość genomu zwierzaków,
 //    wariant zachowania zwierzaków (wyjaśnione w sekcji poniżej)
-    private final AbstractWorldMap worldMap;
-    private final WorldConfiguration worldConfiguration;
-    private boolean running = true;
-    public Simulation(AbstractWorldMap worldMap, WorldConfiguration worldConfiguration) {
-
-    }
-
-    public void run() {
 
 
+//    private final AbstractWorldMap worldMap;
+//    private final WorldConfiguration worldConfiguration;
+//    private boolean running = true;
+//    public Simulation(AbstractWorldMap worldMap, WorldConfiguration worldConfiguration) {
+//
+//    }
+//
+//    public void run() {
 
-    }
 
-}
+//
+//    }
+//
+//}

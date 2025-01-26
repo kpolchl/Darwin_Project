@@ -45,8 +45,6 @@ public abstract class AbstractWorldMap {
 
 
 
-    abstract void grassGrow(int N);
-    // handle grass growth per day
     protected abstract void plantGrow(int N);
 
     protected abstract void eatPlant(Vector2d pos);
@@ -159,7 +157,7 @@ public abstract class AbstractWorldMap {
             if (animalList.get(i).getEnergy() <=0 ) {
                 animalList.remove(i);
             }
-            if
+
         }
     }
 
