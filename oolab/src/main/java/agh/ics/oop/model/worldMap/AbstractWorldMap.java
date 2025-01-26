@@ -1,5 +1,7 @@
 package agh.ics.oop.model.worldMap;
 
+import agh.ics.oop.Stats;
+import agh.ics.oop.model.observators.MapChangeListener;
 import agh.ics.oop.model.worldObjects.Plant;
 import agh.ics.oop.model.utils.Vector2d;
 import agh.ics.oop.model.worldObjects.animal.Animal;
@@ -25,6 +27,7 @@ public abstract class AbstractWorldMap {
     protected List<Animal> children; // temp list only for one day
     protected HashMap<Vector2d, Plant> plantMap;
     protected final Breeding breeding = new Breeding(2,20); // temp do zmiany
+    protected List<MapChangeListener> observers = new ArrayList<>();
 
     protected List<Vector2d> PREFERED_POSITIONS;
     protected List<Vector2d> LESS_PREFERED_POSITIONS;
@@ -40,11 +43,28 @@ public abstract class AbstractWorldMap {
 
     }
 
+
+
+    abstract void grassGrow(int N);
     // handle grass growth per day
     protected abstract void plantGrow(int N);
 
     protected abstract void eatPlant(Vector2d pos);
 
+
+    public void addObserver(MapChangeListener observer) {
+        observers.add(observer);
+    }
+
+    public void removeObserver(MapChangeListener observer) {
+        observers.remove(observer);
+    }
+
+    public void MapChanged(Stats stats) {
+        for (MapChangeListener observer : observers) {
+            observer.mapChanged(this, "kij papi");
+        }
+    }
 
     protected void eatBreedPlace(Animal animal){
 
@@ -123,9 +143,13 @@ public abstract class AbstractWorldMap {
 
         animalList.forEach(this::move); // move all animals
 
-        animalList.sort(Comparator.comparingInt(Animal::getEnergy).reversed()); // sort animal by energy
-
         animalList.forEach(this::eatBreedPlace); // place on map and eat
+
+        animalList.addAll(children); // add all children to animals
+
+        children.clear(); // clearing child list
+
+        animalList.sort(Comparator.comparingInt(Animal::getEnergy).reversed()); // sorting all animals by energy
 
     }
 
