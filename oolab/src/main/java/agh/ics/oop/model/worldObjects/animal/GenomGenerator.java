@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 public class GenomGenerator {
     private final int GENOM_SIZE = 10;
 
+
     public List<Integer> generateRandomGenome() {
         List<Integer> genom = new ArrayList<>();
         for(int i = 0; i < GENOM_SIZE; i++) {
@@ -14,6 +15,7 @@ public class GenomGenerator {
         }
         return genom;
     }
+
 
     public int activateRandomGene() {
         return (int)(Math.random()*GENOM_SIZE);

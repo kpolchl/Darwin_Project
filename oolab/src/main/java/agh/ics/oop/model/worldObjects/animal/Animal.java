@@ -12,12 +12,12 @@ public class Animal {
     private final Mutations mutations = new Mutations();
     private final GenomGenerator genomGenerator = new GenomGenerator();
 
-    private final  List<Integer> genome;
+    private   List<Integer> genome;
     private MapDirection direction;
     private Vector2d coordinate;
     private int energy;
     private int age =0;
-    private int activeGene;
+    private int indexActiveGene;
 
     // Animal constructor only for the start of the simulation
     public Animal(Vector2d coordinate) {
@@ -26,7 +26,7 @@ public class Animal {
         this.energy = STARTING_ENERGY;
         this.age = 0;
         this.genome = genomGenerator.generateRandomGenome();
-        this.activeGene = 0;
+        this.indexActiveGene = 0;
     }
     // Animal constructor for mating
     public Animal(Vector2d coordinate, int energy , List <Integer> genome ) {
@@ -35,7 +35,11 @@ public class Animal {
         this.energy = energy;
         this.genome = genome;
         this.age =0;
-        this.activeGene = genomGenerator.activateRandomGene();
+        this.indexActiveGene = genomGenerator.activateRandomGene();
+    }
+
+    public void setGenome(List<Integer> genome) {
+        this.genome = genome;
     }
 
     public Vector2d getPosition() {
@@ -61,8 +65,12 @@ public class Animal {
     }
 
     private void updateActiveGene(){
-        this.activeGene++;
-        this.activeGene %= 8;
+        this.indexActiveGene++;
+        this.indexActiveGene %= 8;
+    }
+
+    private void ageUpAnimal(){
+        this.age++;
     }
 
     public static MapDirection randomDirection(){
@@ -74,7 +82,11 @@ public class Animal {
     }
 
     public String toString(){
-        return this.direction.toString() ;
+        return this.direction.toString() +
+                this.genome.toString() +
+                this.energy  +
+                this.coordinate.toString() +
+                this.indexActiveGene;
     }
 
     /// poruszanie się
@@ -83,16 +95,13 @@ public class Animal {
     /// 3. aktualizuj aktywny gen
 
     public MapDirection calculateSpinAnimal(){
-        return MapDirection.values()[(this.direction.ordinal()+this.activeGene)%8];
-    }
-
-    private void spinAnimal(){
-        this.direction = calculateSpinAnimal();
+        return MapDirection.values()[(this.direction.ordinal()+this.genome.get(indexActiveGene))%8];
     }
 
     // calculates animal move for world map
     public Vector2d calculateMove() {
         MapDirection direction = calculateSpinAnimal();
+        this.direction = direction;
         return this.coordinate.add(direction.toUnitVector());
     }
 
