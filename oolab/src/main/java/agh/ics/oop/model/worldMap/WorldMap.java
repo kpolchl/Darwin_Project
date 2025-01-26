@@ -1,4 +1,4 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.worldMap;
 
 public class WorldMap {
     private final int width;

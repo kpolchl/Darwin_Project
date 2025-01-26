@@ -1,6 +1,5 @@
-package agh.ics.oop.model.animal;
+package agh.ics.oop.model.worldObjects.animal;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Mutations {

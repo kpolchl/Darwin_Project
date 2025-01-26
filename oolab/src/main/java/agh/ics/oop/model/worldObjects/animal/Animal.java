@@ -1,11 +1,9 @@
-package agh.ics.oop.model.animal;
+package agh.ics.oop.model.worldObjects.animal;
 
-import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.utils.Vector2d;
 import agh.ics.oop.model.enums.MapDirection;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class Animal {
     private final int STARTING_ENERGY = 100;

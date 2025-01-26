@@ -1,6 +1,6 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.utils;
 
-import agh.ics.oop.model.animal.Animal;
+import agh.ics.oop.model.worldObjects.animal.Animal;
 
 import java.util.ArrayList;
 import java.util.HashMap;

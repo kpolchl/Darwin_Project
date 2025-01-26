@@ -1,7 +1,6 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.utils;
 
 
-import javax.swing.text.Position;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;

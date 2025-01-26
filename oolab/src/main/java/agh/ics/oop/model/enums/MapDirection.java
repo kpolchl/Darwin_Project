@@ -1,6 +1,6 @@
 package agh.ics.oop.model.enums;
 
-import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.utils.Vector2d;
 
 //enum to handle animal move directions
 public enum MapDirection {

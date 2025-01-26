@@ -1,9 +1,8 @@
-package agh.ics.oop.model.animal;
+package agh.ics.oop.model.worldObjects.animal;
 
 import agh.ics.oop.model.exceptions.BreedignError;
 
 import java.util.List;
-import java.util.Optional;
 
 public class Breeding {
     private final int ENERGY_PARTITION;

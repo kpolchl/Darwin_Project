@@ -1,4 +1,6 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.worldObjects;
+
+import agh.ics.oop.model.utils.Vector2d;
 
 public class Plant {
     private final Vector2d position;

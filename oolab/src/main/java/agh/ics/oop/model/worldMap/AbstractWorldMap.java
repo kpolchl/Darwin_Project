@@ -1,12 +1,13 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.worldMap;
 
-import agh.ics.oop.model.animal.Animal;
-import agh.ics.oop.model.animal.Breeding;
-import agh.ics.oop.model.exceptions.IncorrectPositionException;
+import agh.ics.oop.model.worldObjects.Plant;
+import agh.ics.oop.model.utils.Vector2d;
+import agh.ics.oop.model.worldObjects.animal.Animal;
+import agh.ics.oop.model.worldObjects.animal.Breeding;
 
 import java.util.*;
 
-import static agh.ics.oop.model.Plant.getPlantEnergy;
+import static agh.ics.oop.model.worldObjects.Plant.getPlantEnergy;
 
 ///
 /// breeding
@@ -22,8 +23,9 @@ public abstract class AbstractWorldMap {
     protected HashMap<Vector2d, List<Animal>> animalMap; // to track moves and breeding
     protected List<Animal> animalList;  // list of all animals on the map should be sorted by energy
     protected List<Animal> children; // temp list only for one day
-    protected HashMap<Vector2d,Plant> plantMap;
+    protected HashMap<Vector2d, Plant> plantMap;
     protected final Breeding breeding = new Breeding(2,20); // temp do zmiany
+
 
     public AbstractWorldMap(Vector2d MAX_COORD, List<Animal> animals) {
         this.MIN_COORD = new Vector2d(0,0);
@@ -35,7 +37,7 @@ public abstract class AbstractWorldMap {
 
     }
 
-    abstract void grassGrow();
+    abstract void grassGrow(int N);
 
 
     protected void eatBreedPlace(Animal animal){
