@@ -37,12 +37,6 @@ public class Breeding {
             mother.setEnergy(energyAfterBreeding(mother));
 
             List<Integer> newGenome = genomGenerator.generateGenomeByMating(father.getGenome() ,mother.getGenome() ,father.getEnergy() ,mother.getEnergy());
-            int numofMutations = rand.nextInt(maxNumberOfMutations)+minimalNumberOfMutations;
-            for (int i=0;i<numofMutations;i++) {
-
-            }
-
-
 
             return new Animal(father.getPosition(), newEnergy, newGenome);
         }
