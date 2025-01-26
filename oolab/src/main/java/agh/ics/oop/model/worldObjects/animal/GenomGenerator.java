@@ -26,8 +26,8 @@ public class GenomGenerator {
         int genomSize = submissiveGenome.size();
         if(energy2 > energy1) {
             List<Integer> temp = submissiveGenome;
-            dominantGenome = submissiveGenome;
-            submissiveGenome = temp;
+            submissiveGenome = dominantGenome;
+            dominantGenome = temp;
         }
 
         int leftSplitIndex = (int) (((Math.max(energy1, energy2))/ (double) (energy1+energy2)) * genomSize);
