@@ -7,11 +7,9 @@ import agh.ics.oop.model.worldObjects.animal.Animal;
 import java.util.*;
 
 public class EquatorMap extends AbstractWorldMap {
-    private final int PLANTS_PER_DAY;
 
-    public EquatorMap(Vector2d MAX_COORD, List<Animal> animals , int PLANTS_PER_DAY) {
-        super(MAX_COORD, animals);
-        this.PLANTS_PER_DAY = PLANTS_PER_DAY;
+    public EquatorMap(Vector2d MAX_COORD) {
+        super(MAX_COORD);
         this.PREFERED_POSITIONS = new ArrayList<>();
         this.LESS_PREFERED_POSITIONS = new ArrayList<>();
 
@@ -35,7 +33,7 @@ public class EquatorMap extends AbstractWorldMap {
     }
 
     @Override
-    protected void plantGrow(int PLANTS_PER_DAY) {
+    public void plantGrow(int PLANTS_PER_DAY) {
         double parettoNum = 0.8;
         Random rand = new Random();
         // add on prevered places

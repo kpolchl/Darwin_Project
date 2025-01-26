@@ -3,11 +3,13 @@ package agh.ics.oop.model.worldObjects.animal;
 import agh.ics.oop.model.exceptions.BreedignError;
 
 import java.util.List;
+import java.util.Random;
 
 public class Breeding {
     private final int ENERGY_PARTITION;
     private final int BREEDING_ENERGY;
     private GenomGenerator genomGenerator = new GenomGenerator();
+    private Mutations mutations = new Mutations();
 
     public Breeding(int ENERGY_PARTITION ,int BREEDING_ENERGY) {
         this.ENERGY_PARTITION = ENERGY_PARTITION;
@@ -27,13 +29,20 @@ public class Breeding {
 
     // probably will change due to map implementation
 
-    public Animal breed(Animal father, Animal mother) throws BreedignError {
+    public Animal breed(Animal father, Animal mother , int minimalNumberOfMutations , int maxNumberOfMutations) throws BreedignError {
+        Random rand = new Random();
         if (canBreed(father) && canBreed(mother) ) {
             int newEnergy = calculateEnergyBreedingLoss(father) + calculateEnergyBreedingLoss(mother);
             father.setEnergy(energyAfterBreeding(father));
             mother.setEnergy(energyAfterBreeding(mother));
 
             List<Integer> newGenome = genomGenerator.generateGenomeByMating(father.getGenome() ,mother.getGenome() ,father.getEnergy() ,mother.getEnergy());
+            int numofMutations = rand.nextInt(maxNumberOfMutations)+minimalNumberOfMutations;
+            for (int i=0;i<numofMutations;i++) {
+
+            }
+
+
 
             return new Animal(father.getPosition(), newEnergy, newGenome);
         }

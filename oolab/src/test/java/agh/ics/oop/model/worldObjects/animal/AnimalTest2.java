@@ -27,7 +27,7 @@ class AnimalTest2 {
 
     @Test
     void move() {
-        Animal animal1 = new Animal(new Vector2d(1,1));
+        Animal animal1 = new Animal(new Vector2d(1,1),100,2);
         animal1.setGenome(List.of(0, 1, 1, 1, 1, 1, 1, 1, 1, 1));
         System.out.println(animal1.toString());
         Vector2d CordAfterMove = animal1.calculateMove();

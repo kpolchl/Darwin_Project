@@ -2,14 +2,13 @@ package agh.ics.oop.model.worldMap;
 
 import agh.ics.oop.Stats;
 import agh.ics.oop.model.observators.MapChangeListener;
+import agh.ics.oop.model.utils.RandomPositionGenerator;
 import agh.ics.oop.model.worldObjects.Plant;
 import agh.ics.oop.model.utils.Vector2d;
 import agh.ics.oop.model.worldObjects.animal.Animal;
 import agh.ics.oop.model.worldObjects.animal.Breeding;
 
 import java.util.*;
-
-import static agh.ics.oop.model.worldObjects.Plant.getPlantEnergy;
 
 ///
 /// breeding
@@ -23,7 +22,7 @@ public abstract class AbstractWorldMap {
     protected Vector2d MIN_COORD;
     protected Vector2d MAX_COORD;
     protected HashMap<Vector2d, List<Animal>> animalMap; // to track moves and breeding
-    protected List<Animal> animalList;  // list of all animals on the map should be sorted by energy
+    protected List<Animal> animalList = new ArrayList<Animal>();  // list of all animals on the map should be sorted by energy
     protected List<Animal> children; // temp list only for one day
     protected HashMap<Vector2d, Plant> plantMap;
     protected final Breeding breeding = new Breeding(2,20); // temp do zmiany
@@ -33,24 +32,16 @@ public abstract class AbstractWorldMap {
     protected List<Vector2d> LESS_PREFERED_POSITIONS;
 
 
-    public AbstractWorldMap(Vector2d MAX_COORD, List<Animal> animals) {
+    public AbstractWorldMap(Vector2d MAX_COORD) {
         this.MIN_COORD = new Vector2d(0,0);
         this.MAX_COORD = MAX_COORD;
         this.animalMap = new HashMap<>();
-        for (Animal animal : animals) {
-            this.animalMap.computeIfAbsent(animal.getPosition(), k -> new ArrayList<>()).add(animal); // do stestowania bo nie wierzę że to działa
-        }
-
     }
 
 
-
-    abstract void grassGrow(int N);
-    // handle grass growth per day
-    protected abstract void plantGrow(int N);
+    public abstract void plantGrow(int N);
 
     protected abstract void eatPlant(Vector2d pos);
-
 
     public void addObserver(MapChangeListener observer) {
         observers.add(observer);
@@ -66,15 +57,21 @@ public abstract class AbstractWorldMap {
         }
     }
 
-    protected void eatBreedPlace(Animal animal){
-
-        // eating
+    public void animalEat(Animal animal , int plantEnergy) {
         if (plantMap.containsKey(animal.getPosition())){
-            animal.setEnergy(animal.getEnergy()+getPlantEnergy());
+            animal.setEnergy(animal.getEnergy()+plantEnergy);
             plantMap.remove(animal.getPosition());
             eatPlant(animal.getPosition()); // handles adding cord for generating plants
         }
+    }
+    public void animalBreed(Animal animal) {
 
+
+    }
+
+    protected void eatBreedPlace(Animal animal , int plantEnergy) {
+
+        animalEat(animal, plantEnergy);
         //breeding
         if(animalMap.containsKey(animal.getPosition()) && animalMap.get(animal.getPosition()).size() == 1){
 
@@ -139,9 +136,11 @@ public abstract class AbstractWorldMap {
     /// place
     /// eat
     /// breed
-    protected void moveAnimalsOnMap() { // ta logika jest troche upośledzona dlaczego nie dodaje od razu przy ruchu trawy ale huj nie ruszam już przy testach się zobaczy czy działa tak jak miało
+    protected void moveAnimalsOnMap(int plantEnergy) { // ta logika jest troche upośledzona dlaczego nie dodaje od razu przy ruchu trawy ale huj nie ruszam już przy testach się zobaczy czy działa tak jak miało
 
         animalList.forEach(this::move); // move all animals
+
+        animalList.forEach(animal -> animalEat(animal, plantEnergy));
 
         animalList.forEach(this::eatBreedPlace); // place on map and eat
 
@@ -153,14 +152,23 @@ public abstract class AbstractWorldMap {
 
     }
 
-    protected void deleteDeadAnimals() {
+    public void deleteDeadAnimals() {
         int N = animalList.size();
         for (int i = N-1; i < N; i++) {
             if (animalList.get(i).getEnergy() <=0 ) {
                 animalList.remove(i);
             }
-            if
+            else {
+                return;
+            }
         }
     }
+    public void createStartingAnimals(int numberOfAnimals , int startingEnergy, int genomeLength) {
+        RandomPositionGenerator randGenerator = new RandomPositionGenerator(MAX_COORD.getX(),MAX_COORD.getY(),numberOfAnimals);
+        for (Vector2d position : randGenerator) {
+            animalList.add(new Animal(position, startingEnergy , genomeLength));
+        }
+    }
+    public void create
 
 }

@@ -1,16 +1,17 @@
 package agh.ics.oop.model.worldObjects.animal;
 
+import agh.ics.oop.model.utils.Vector2d;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
 public class GenomGenerator {
-    private final int GENOM_SIZE = 10;
+    private int genomeSize;
 
-
-    public List<Integer> generateRandomGenome() {
+    public List<Integer> generateRandomGenome(int genomeSize) {
         List<Integer> genom = new ArrayList<>();
-        for(int i = 0; i < GENOM_SIZE; i++) {
+        for(int i = 0; i < genomeSize; i++) {
             genom.add((int)(Math.random() * 8));
         }
         return genom;
@@ -18,7 +19,7 @@ public class GenomGenerator {
 
 
     public int activateRandomGene() {
-        return (int)(Math.random()*GENOM_SIZE);
+        return (int)(Math.random()*genomeSize);
     }
 
     public List<Integer> generateGenomeByMating(List<Integer> dominantGenome, List<Integer> submissiveGenome , int energy1 ,int energy2) {

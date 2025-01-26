@@ -14,7 +14,7 @@ class AnimalTest {
 
     @Test
     void isRandomDirectionValid() {
-        Animal animal1 = new Animal(new Vector2d(1,1));
+        Animal animal1 = new Animal(new Vector2d(1,1) , 100,2);
         System.out.println(randomDirection());
     }
 

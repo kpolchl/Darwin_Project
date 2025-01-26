@@ -6,7 +6,6 @@ import agh.ics.oop.model.enums.MapDirection;
 import java.util.List;
 
 public class Animal {
-    private final int STARTING_ENERGY = 100;
     private final int ENERGY_LOSS=2;
 
     private final Mutations mutations = new Mutations();
@@ -20,12 +19,12 @@ public class Animal {
     private int indexActiveGene;
 
     // Animal constructor only for the start of the simulation
-    public Animal(Vector2d coordinate) {
+    public Animal(Vector2d coordinate , int energy , int genomeLength) {
         this.direction = MapDirection.NORTH;
         this.coordinate = coordinate;
-        this.energy = STARTING_ENERGY;
+        this.energy = energy;
         this.age = 0;
-        this.genome = genomGenerator.generateRandomGenome();
+        this.genome = genomGenerator.generateRandomGenome(genomeLength);
         this.indexActiveGene = 0;
     }
     // Animal constructor for mating

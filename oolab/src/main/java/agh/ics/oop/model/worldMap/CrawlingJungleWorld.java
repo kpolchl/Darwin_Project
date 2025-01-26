@@ -10,11 +10,9 @@ import java.util.List;
 import java.util.Random;
 
 public class CrawlingJungleWorld extends AbstractWorldMap {
-    private final int PLANTS_PER_DAY;
 
-    public CrawlingJungleWorld(Vector2d MAX_COORD, List<Animal> animals , int PLANTS_PER_DAY) {
-        super(MAX_COORD, animals);
-        this.PLANTS_PER_DAY = PLANTS_PER_DAY;
+    public CrawlingJungleWorld(Vector2d MAX_COORD) {
+        super(MAX_COORD);
         this.PREFERED_POSITIONS = new ArrayList<>();
         this.LESS_PREFERED_POSITIONS = new ArrayList<>();
 
@@ -61,7 +59,7 @@ public class CrawlingJungleWorld extends AbstractWorldMap {
     }
 
     @Override
-    protected void plantGrow(int PLANTS_PER_DAY) {
+    public void plantGrow(int PLANTS_PER_DAY) {
         double parrettNum =0.8;
         int i =0;
         Random rand = new Random();
