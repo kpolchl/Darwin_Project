@@ -13,13 +13,13 @@ public class EquatorMap extends AbstractWorldMap {
         super(MAX_COORD, animals);
         this.PLANTS_PER_DAY = PLANTS_PER_DAY;
         this.PREFERED_POSITIONS = new ArrayList<>();
-        this.LESS_PREVERED_POSITIONS = new ArrayList<>();
+        this.LESS_PREFERED_POSITIONS = new ArrayList<>();
 
         int lowerBound = 2*MAX_COORD.getY()/5;
         int upperBound = 3*MAX_COORD.getY()/5;
         for(int i =0; i < lowerBound; i++){
             for(int j =0; j < MAX_COORD.getX(); j++){
-                LESS_PREVERED_POSITIONS.add(new Vector2d(j,i));
+                LESS_PREFERED_POSITIONS.add(new Vector2d(j,i));
             }
         }
         for(int i =lowerBound; i < upperBound; i++){
@@ -29,13 +29,13 @@ public class EquatorMap extends AbstractWorldMap {
         }
         for(int i =upperBound; i < MAX_COORD.getY(); i++){
             for(int j =0; j < MAX_COORD.getX(); j++){
-                LESS_PREVERED_POSITIONS.add(new Vector2d(j,i));
+                LESS_PREFERED_POSITIONS.add(new Vector2d(j,i));
             }
         }
     }
 
     @Override
-    protected void grassGrow(int PLANTS_PER_DAY) {
+    protected void plantGrow(int PLANTS_PER_DAY) {
         double parettoNum = 0.8;
         Random rand = new Random();
         // add on prevered places
@@ -48,9 +48,9 @@ public class EquatorMap extends AbstractWorldMap {
         }
         // add on other places
         while(i<PLANTS_PER_DAY){
-            Vector2d plantpos = LESS_PREVERED_POSITIONS.get(rand.nextInt(PREFERED_POSITIONS.size()));
+            Vector2d plantpos = LESS_PREFERED_POSITIONS.get(rand.nextInt(PREFERED_POSITIONS.size()));
             plantMap.put(plantpos, new Plant(plantpos));
-            LESS_PREVERED_POSITIONS.remove(plantpos);
+            LESS_PREFERED_POSITIONS.remove(plantpos);
             i++;
         }
     }
@@ -58,6 +58,16 @@ public class EquatorMap extends AbstractWorldMap {
     protected boolean isPreferedPosition(Vector2d pos){
         return pos.getY() >= 2*MAX_COORD.getY()/5 && pos.getY() <= 3*MAX_COORD.getY()/5;
 
+    }
+
+    @Override
+    protected void eatPlant(Vector2d pos) {
+        if( isPreferedPosition(pos)){
+            PREFERED_POSITIONS.add(pos);
+        }
+        else{
+            LESS_PREFERED_POSITIONS.add(pos);
+        }
     }
 
 }

@@ -27,7 +27,7 @@ public abstract class AbstractWorldMap {
     protected final Breeding breeding = new Breeding(2,20); // temp do zmiany
 
     protected List<Vector2d> PREFERED_POSITIONS;
-    protected List<Vector2d> LESS_PREVERED_POSITIONS;
+    protected List<Vector2d> LESS_PREFERED_POSITIONS;
 
 
     public AbstractWorldMap(Vector2d MAX_COORD, List<Animal> animals) {
@@ -41,10 +41,9 @@ public abstract class AbstractWorldMap {
     }
 
     // handle grass growth per day
-    protected abstract void grassGrow(int N);
+    protected abstract void plantGrow(int N);
 
-    // checks whether position is prefered for growth or not
-    protected abstract boolean isPreferedPosition(Vector2d pos);
+    protected abstract void eatPlant(Vector2d pos);
 
 
     protected void eatBreedPlace(Animal animal){
@@ -53,12 +52,7 @@ public abstract class AbstractWorldMap {
         if (plantMap.containsKey(animal.getPosition())){
             animal.setEnergy(animal.getEnergy()+getPlantEnergy());
             plantMap.remove(animal.getPosition());
-            if (isPreferedPosition(animal.getPosition())){
-                PREFERED_POSITIONS.add(animal.getPosition());
-            }
-            else {
-                LESS_PREVERED_POSITIONS.add(animal.getPosition());
-            }
+            eatPlant(animal.getPosition()); // handles adding cord for generating plants
         }
 
         //breeding
