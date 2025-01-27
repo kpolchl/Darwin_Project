@@ -8,8 +8,8 @@ import java.util.*;
 
 public class EquatorMap extends AbstractWorldMap {
 
-    public EquatorMap(Vector2d MAX_COORD) {
-        super(MAX_COORD);
+    public EquatorMap(Vector2d MAX_COORD , int breedingPartition , int breedingEnergy) {
+        super(MAX_COORD , breedingPartition , breedingEnergy);
         this.PREFERED_POSITIONS = new ArrayList<>();
         this.LESS_PREFERED_POSITIONS = new ArrayList<>();
 

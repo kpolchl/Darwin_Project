@@ -14,10 +14,10 @@ public class Simulation {
 //    wariant wzrostu roślin (wyjaśnione w sekcji poniżej), da
 //    startowa liczba zwierzaków, da
 //    startowa energia zwierzaków,  da
-//    energia konieczna, by uznać zwierzaka za najedzonego (i gotowego do rozmnażania),
-//    energia rodziców zużywana by stworzyć potomka,
-//    minimalna i maksymalna liczba mutacji u potomków (może być równa 0),
-//    wariant mutacji (wyjaśnione w sekcji poniżej),
+//    energia konieczna, by uznać zwierzaka za najedzonego (i gotowego do rozmnażania),niet
+//    energia rodziców zużywana by stworzyć potomka, niet
+//    minimalna i maksymalna liczba mutacji u potomków (może być równa 0), da
+//    wariant mutacji (wyjaśnione w sekcji poniżej), da
 //    długość genomu zwierzaków, da
 //    wariant zachowania zwierzaków (wyjaśnione w sekcji poniżej) da
     private final AbstractWorldMap worldMap;
@@ -28,13 +28,12 @@ public class Simulation {
         this.worldConfiguration = worldConfiguration;
 
         this.worldMap = worldConfiguration.mapType() ?
-                new EquatorMap(worldConfiguration.maxVector()) :
-                new CrawlingJungleWorld(worldConfiguration.maxVector());
+                new EquatorMap(worldConfiguration.maxVector(), worldConfiguration.animalEnergyPartition(), worldConfiguration.animalBreedingEnergyLoss()) :
+                new CrawlingJungleWorld(worldConfiguration.maxVector(), worldConfiguration.animalEnergyPartition(), worldConfiguration.animalBreedingEnergyLoss());
 
         worldMap.createStartingAnimals(worldConfiguration.animalStartingNumber() , worldConfiguration.animalStartingEnergy() , worldConfiguration.animalGenomeLength());
 
         worldMap.plantGrow(worldConfiguration.plantStartingNumber());
-
 
     }
 
@@ -44,10 +43,13 @@ public class Simulation {
     public void run() {
         while (running) {
             worldMap.deleteDeadAnimals();
-
+            worldMap.animalDay(worldConfiguration.plantEnergy(), worldConfiguration.animalMutationMinimum(),worldConfiguration.animalMutationMaximum(),worldConfiguration.mutationType());
+            worldMap.plantGrow(worldConfiguration.plantDaily());
         }
 
-
+    }
+    public void stop() {
+        running = false;
     }
 
 }

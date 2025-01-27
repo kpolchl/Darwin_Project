@@ -11,8 +11,8 @@ import java.util.Random;
 
 public class CrawlingJungleWorld extends AbstractWorldMap {
 
-    public CrawlingJungleWorld(Vector2d MAX_COORD) {
-        super(MAX_COORD);
+    public CrawlingJungleWorld(Vector2d MAX_COORD , int breedingPartition , int breedingEnergy) {
+        super(MAX_COORD , breedingPartition , breedingEnergy);
         this.PREFERED_POSITIONS = new ArrayList<>();
         this.LESS_PREFERED_POSITIONS = new ArrayList<>();
 

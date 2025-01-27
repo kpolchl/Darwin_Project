@@ -25,7 +25,7 @@ public abstract class AbstractWorldMap {
     protected List<Animal> animalList = new ArrayList<Animal>();  // list of all animals on the map should be sorted by energy
     protected List<Animal> children; // temp list only for one day
     protected HashMap<Vector2d, Plant> plantMap;
-    protected final Breeding breeding = new Breeding(2, 20); // temp do zmiany
+    protected final Breeding breeding;
     protected List<MapChangeListener> observers = new ArrayList<>();
     protected Mutations mutations = new Mutations();
 
@@ -33,10 +33,11 @@ public abstract class AbstractWorldMap {
     protected List<Vector2d> LESS_PREFERED_POSITIONS;
 
 
-    public AbstractWorldMap(Vector2d MAX_COORD) {
+    public AbstractWorldMap(Vector2d MAX_COORD , int breedingPartition , int breedingEnergy) {
         this.MIN_COORD = new Vector2d(0, 0);
         this.MAX_COORD = MAX_COORD;
         this.animalMap = new HashMap<>();
+        this.breeding = new Breeding(breedingPartition , breedingEnergy);
     }
 
 
@@ -137,7 +138,7 @@ public abstract class AbstractWorldMap {
     /// place
     /// eat
     /// breed
-    protected void moveAnimalsOnMap(int plantEnergy, int minimumNumOfMutations, int maximumNumOfMutations, boolean mutationType) { // ta logika jest troche upośledzona dlaczego nie dodaje od razu przy ruchu trawy ale huj nie ruszam już przy testach się zobaczy czy działa tak jak miało
+    public void animalDay(int plantEnergy, int minimumNumOfMutations, int maximumNumOfMutations, boolean mutationType) { // ta logika jest troche upośledzona dlaczego nie dodaje od razu przy ruchu trawy ale huj nie ruszam już przy testach się zobaczy czy działa tak jak miało
 
         animalList.forEach(this::move); // move all animals
 
@@ -147,13 +148,11 @@ public abstract class AbstractWorldMap {
 
         animalList.addAll(children); // add all children to animals
 
-        animalList.forEach(animal -> {placeAnimal();
-        })
+        animalList.forEach(this::placeAnimal);
 
         children.clear(); // clearing child list
 
         animalList.sort(Comparator.comparingInt(Animal::getEnergy).reversed()); // sorting all animals by energy
-
     }
 
     public void deleteDeadAnimals() {
