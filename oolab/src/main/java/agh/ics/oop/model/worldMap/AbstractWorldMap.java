@@ -37,6 +37,7 @@ public abstract class AbstractWorldMap {
         this.MIN_COORD = new Vector2d(0, 0);
         this.MAX_COORD = MAX_COORD;
         this.animalMap = new HashMap<>();
+        this.plantMap = new HashMap<>();
     }
 
 
@@ -50,6 +51,10 @@ public abstract class AbstractWorldMap {
 
     public void removeObserver(MapChangeListener observer) {
         observers.remove(observer);
+    }
+
+    public HashMap<Vector2d, Plant> getPlantMap() {
+        return plantMap;
     }
 
     public void MapChanged(Stats stats) {
@@ -74,7 +79,7 @@ public abstract class AbstractWorldMap {
                     .filter(list -> !list.isEmpty())
                     .map(List::getFirst);
             if (firstAnimal.isPresent()) {
-                Animal child = breeding.breed(firstAnimal.get(), animal, minimumNumOfMutations, maximumNumOfMutations);
+                Animal child = breeding.breed(firstAnimal.get(), animal);
                 if (mutationType) {
                     for (int i = 0; i < random.nextInt(maximumNumOfMutations) + minimumNumOfMutations; i++) {
                         mutations.mutateRandomGenes(child.getGenome());
@@ -147,8 +152,8 @@ public abstract class AbstractWorldMap {
 
         animalList.addAll(children); // add all children to animals
 
-        animalList.forEach(animal -> {placeAnimal();
-        })
+//        animalList.forEach(animal -> {placeAnimal();
+//        })
 
         children.clear(); // clearing child list
 

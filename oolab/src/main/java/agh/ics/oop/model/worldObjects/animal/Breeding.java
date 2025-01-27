@@ -29,7 +29,7 @@ public class Breeding {
 
     // probably will change due to map implementation
 
-    public Animal breed(Animal father, Animal mother , int minimalNumberOfMutations , int maxNumberOfMutations) throws BreedignError {
+    public Animal breed(Animal father, Animal mother) throws BreedignError {
         Random rand = new Random();
         if (canBreed(father) && canBreed(mother) ) {
             int newEnergy = calculateEnergyBreedingLoss(father) + calculateEnergyBreedingLoss(mother);

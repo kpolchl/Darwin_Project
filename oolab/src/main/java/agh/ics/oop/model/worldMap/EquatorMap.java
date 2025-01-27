@@ -38,14 +38,14 @@ public class EquatorMap extends AbstractWorldMap {
         Random rand = new Random();
         // add on prevered places
         int i =0;
-        while (i < (int) PLANTS_PER_DAY*parettoNum) {
+        while (i < (int) PLANTS_PER_DAY*parettoNum && !PREFERED_POSITIONS.isEmpty()) {
             Vector2d plantpos = PREFERED_POSITIONS.get(rand.nextInt(PREFERED_POSITIONS.size()));
                 plantMap.put(plantpos, new Plant(plantpos));
                 PREFERED_POSITIONS.remove(plantpos);
                 i++;
         }
         // add on other places
-        while(i<PLANTS_PER_DAY){
+        while(i<PLANTS_PER_DAY && !LESS_PREFERED_POSITIONS.isEmpty()) {
             Vector2d plantpos = LESS_PREFERED_POSITIONS.get(rand.nextInt(PREFERED_POSITIONS.size()));
             plantMap.put(plantpos, new Plant(plantpos));
             LESS_PREFERED_POSITIONS.remove(plantpos);
@@ -66,6 +66,7 @@ public class EquatorMap extends AbstractWorldMap {
         else{
             LESS_PREFERED_POSITIONS.add(pos);
         }
+        plantMap.remove(pos);
     }
 
 }

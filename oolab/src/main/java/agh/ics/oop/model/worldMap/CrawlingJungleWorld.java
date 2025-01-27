@@ -26,7 +26,7 @@ public class CrawlingJungleWorld extends AbstractWorldMap {
     }
 
     // zwróć na to uwage
-    private void addPreferredPositions(Vector2d position) {
+    void addPreferredPositions(Vector2d position) {
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
                 if (dx == 0 && dy == 0) continue;
@@ -40,7 +40,7 @@ public class CrawlingJungleWorld extends AbstractWorldMap {
     }
 
     // oraz na to
-    private void removePreferredPositions(Vector2d position) {
+    void removePreferredPositions(Vector2d position) {
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
                 if (dx == 0 && dy == 0) continue;
@@ -91,5 +91,6 @@ public class CrawlingJungleWorld extends AbstractWorldMap {
     protected void eatPlant(Vector2d pos) {
         LESS_PREFERED_POSITIONS.add(pos);
         removePreferredPositions(pos);
+        plantMap.remove(pos);
     }
 }
