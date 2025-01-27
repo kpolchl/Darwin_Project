@@ -41,8 +41,13 @@ public abstract class AbstractWorldMap {
         this.animalMap = new HashMap<>();
         this.breeding = new Breeding(breedingPartition, breedingEnergy);
         this.plantMap = new HashMap<>();
+        this.deadAnimalsList = new ArrayList<>();
+        this.children = new ArrayList<>();
     }
 
+    public List<Animal> getAnimalList() {
+        return animalList;
+    }
 
     public HashMap<Vector2d, Plant> getPlantMap() {
         return plantMap;
@@ -65,6 +70,11 @@ public abstract class AbstractWorldMap {
             observer.mapChanged(this, statistics);
         }
     }
+
+    public List<Animal> getChildren() {
+        return children;
+    }
+
     protected List<Animal> getAllAnimals() {
         List<Animal> allAnimals = new ArrayList<>(animalList);
         allAnimals.addAll(deadAnimalsList);
@@ -112,7 +122,7 @@ public abstract class AbstractWorldMap {
     }
 
     protected double getAverageLife() {
-        return deadAnimalsList.isEmpty() ? 0.00 : deadAnimalsList.stream().mapToInt(Animal::getEnergy).average().orElse(0.0) / deadAnimalsList.size();
+        return deadAnimalsList.isEmpty() ? 0.00 : deadAnimalsList.stream().mapToInt(Animal::getAge).average().orElse(0.0) / deadAnimalsList.size();
     }
 
     protected double getAverageAliveAnimalsChildrenCount() {
@@ -137,8 +147,8 @@ public abstract class AbstractWorldMap {
 
     public void animalEat(Animal animal, int plantEnergy) {
         if (plantMap.containsKey(animal.getPosition())) {
-            animal.setEnergy(animal.getEnergy() + plantEnergy);
             plantMap.remove(animal.getPosition());
+            animal.eatPlant(plantEnergy); // update plant eaten and animal energy
             eatPlant(animal.getPosition()); // handles adding cord for generating plants
         }
     }
@@ -168,7 +178,7 @@ public abstract class AbstractWorldMap {
     }
 
 
-    protected void placeAnimal(Animal animal) {
+    public void placeAnimal(Animal animal) {
         animalMap.computeIfAbsent(animal.getPosition(), k -> new ArrayList<>()).add(animal); // do stestowania bo nie wierzę że to działa
     }
 
@@ -201,7 +211,7 @@ public abstract class AbstractWorldMap {
     }
 
     // handle animal move on the map
-    protected void move(Animal animal) {
+    public void moveBorderCondition(Animal animal) {
 
         Vector2d CordAfterMove = animal.calculateMove();
 
@@ -216,7 +226,10 @@ public abstract class AbstractWorldMap {
         } else if (exitOnRight(CordAfterMove)) {
             CordAfterMove.setX(MIN_COORD.getX());
         }
+        animalMap.remove(animal.getPosition()); //susy baka nie wiem
         animal.move(CordAfterMove);
+        placeAnimal(animal); // susy baka 
+
     }
 
     /// Move
@@ -226,7 +239,7 @@ public abstract class AbstractWorldMap {
     /// breed
     public void animalDay(int plantEnergy, int minimumNumOfMutations, int maximumNumOfMutations, boolean mutationType) { // ta logika jest troche upośledzona dlaczego nie dodaje od razu przy ruchu trawy ale huj nie ruszam już przy testach się zobaczy czy działa tak jak miało
 
-        animalList.forEach(this::move); // move all animals
+        animalList.forEach(this::moveBorderCondition); // move all animals
 
         animalList.forEach(animal -> animalEat(animal, plantEnergy));
 
@@ -234,7 +247,7 @@ public abstract class AbstractWorldMap {
 
         animalList.addAll(children); // add all children to animals
 
-        animalList.forEach(this::placeAnimal);
+//        animalList.forEach(this::placeAnimal);
 
         children.clear(); // clearing child list
 
@@ -243,7 +256,7 @@ public abstract class AbstractWorldMap {
 
     public void deleteDeadAnimals() {
         int N = animalList.size();
-        for (int i = N - 1; i < N; i++) {
+        for (int i = N - 1; i <= 0; i++) {
             if (animalList.get(i).isDead()) {
                 animalList.remove(i);
                 deadAnimalsList.add(animalList.get(i));

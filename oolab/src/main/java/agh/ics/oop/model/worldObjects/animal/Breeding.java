@@ -27,7 +27,6 @@ public class Breeding {
         return animal.getEnergy() - calculateEnergyBreedingLoss(animal);
     }
 
-    // probably will change due to map implementation
 
     public Animal breed(Animal father, Animal mother) throws BreedignError {
         Random rand = new Random();

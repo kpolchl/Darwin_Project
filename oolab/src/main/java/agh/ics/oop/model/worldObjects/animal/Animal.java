@@ -31,6 +31,8 @@ public class Animal implements WorldElement {
         this.age = 0;
         this.genome = genomGenerator.generateRandomGenome(genomeLength);
         this.indexActiveGene = 0;
+        this.plantEaten = 0;
+        this.children = new ArrayList<>();
     }
     // Animal constructor for mating
     public Animal(Vector2d coordinate, int energy , List <Integer> genome ) {
@@ -40,13 +42,18 @@ public class Animal implements WorldElement {
         this.genome = genome;
         this.age =0;
         this.indexActiveGene = genomGenerator.activateRandomGene();
+        this.plantEaten = 0;
+        this.children = new ArrayList<>();
     }
 
     public void setDayOfDeath(int dayOfDeath) {
         this.dayOfDeath = dayOfDeath;
     }
     public int getNumberOfChildren() {
-        return children.size();
+        return this.children.size();
+    }
+    public int getAge(){
+        return this.age;
     }
 
     public int getNumberOfDescendants(){
@@ -86,6 +93,10 @@ public class Animal implements WorldElement {
     private void updateActiveGene(){
         this.indexActiveGene++;
         this.indexActiveGene %= 8;
+    }
+    public void eatPlant(int plantEnergy){
+        this.plantEaten++;
+        this.energy += plantEnergy;
     }
 
     private void ageUpAnimal(){
