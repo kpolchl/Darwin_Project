@@ -2,10 +2,11 @@ package agh.ics.oop.model.worldObjects.animal;
 
 import agh.ics.oop.model.utils.Vector2d;
 import agh.ics.oop.model.enums.MapDirection;
+import agh.ics.oop.model.worldObjects.WorldElement;
 
 import java.util.List;
 
-public class Animal {
+public class Animal implements WorldElement {
     private final int ENERGY_LOSS=2;
 
     private final Mutations mutations = new Mutations();

@@ -5,6 +5,7 @@ import agh.ics.oop.model.observators.MapChangeListener;
 import agh.ics.oop.model.utils.RandomPositionGenerator;
 import agh.ics.oop.model.worldObjects.Plant;
 import agh.ics.oop.model.utils.Vector2d;
+import agh.ics.oop.model.worldObjects.WorldElement;
 import agh.ics.oop.model.worldObjects.animal.Animal;
 import agh.ics.oop.model.worldObjects.animal.Breeding;
 import agh.ics.oop.model.worldObjects.animal.Mutations;
@@ -98,6 +99,16 @@ public abstract class AbstractWorldMap {
 
     protected void placeAnimal(Animal animal) {
         animalMap.computeIfAbsent(animal.getPosition(), k -> new ArrayList<>()).add(animal); // do stestowania bo nie wierzę że to działa
+    }
+
+
+    public boolean isOccupied(Vector2d position) {
+        return animalMap.containsKey(position);
+    }
+
+    public WorldElement objectAt(Vector2d position) {
+        if (animalMap.get(position) != null) return animalMap.get(position).getFirst();
+        return null;
     }
 
     protected boolean inBounds(Vector2d pos) {

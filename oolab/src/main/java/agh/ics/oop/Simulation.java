@@ -15,7 +15,7 @@ public class Simulation {
 //    startowa liczba zwierzaków, da
 //    startowa energia zwierzaków,  da
 //    energia konieczna, by uznać zwierzaka za najedzonego (i gotowego do rozmnażania),niet
-//    energia rodziców zużywana by stworzyć potomka, niet
+//    energia rodziców zużywana by stworzyć potomka, da
 //    minimalna i maksymalna liczba mutacji u potomków (może być równa 0), da
 //    wariant mutacji (wyjaśnione w sekcji poniżej), da
 //    długość genomu zwierzaków, da
@@ -27,12 +27,16 @@ public class Simulation {
     public Simulation(WorldConfiguration worldConfiguration) {
         this.worldConfiguration = worldConfiguration;
 
+        //map type
+        //map size, energy partition , breedingEnergyLoss
         this.worldMap = worldConfiguration.mapType() ?
                 new EquatorMap(worldConfiguration.maxVector(), worldConfiguration.animalEnergyPartition(), worldConfiguration.animalBreedingEnergyLoss()) :
                 new CrawlingJungleWorld(worldConfiguration.maxVector(), worldConfiguration.animalEnergyPartition(), worldConfiguration.animalBreedingEnergyLoss());
 
+        // starting animal numbers
         worldMap.createStartingAnimals(worldConfiguration.animalStartingNumber() , worldConfiguration.animalStartingEnergy() , worldConfiguration.animalGenomeLength());
 
+        //starting plants
         worldMap.plantGrow(worldConfiguration.plantStartingNumber());
 
     }
@@ -43,7 +47,9 @@ public class Simulation {
     public void run() {
         while (running) {
             worldMap.deleteDeadAnimals();
+            // plantEnergy , mutationMin , mutationMax , mutationType
             worldMap.animalDay(worldConfiguration.plantEnergy(), worldConfiguration.animalMutationMinimum(),worldConfiguration.animalMutationMaximum(),worldConfiguration.mutationType());
+            // dailyPlant grow
             worldMap.plantGrow(worldConfiguration.plantDaily());
         }
 
