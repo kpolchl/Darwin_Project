@@ -2,7 +2,6 @@ package agh.ics.oop.model.worldMap;
 
 import agh.ics.oop.model.utils.Vector2d;
 import agh.ics.oop.model.worldObjects.Plant;
-import agh.ics.oop.model.worldObjects.animal.Animal;
 
 import java.util.*;
 
@@ -10,24 +9,24 @@ public class EquatorMap extends AbstractWorldMap {
 
     public EquatorMap(Vector2d MAX_COORD , int breedingPartition , int breedingEnergy) {
         super(MAX_COORD , breedingPartition , breedingEnergy);
-        this.PREFERED_POSITIONS = new ArrayList<>();
-        this.LESS_PREFERED_POSITIONS = new ArrayList<>();
+        this.preferredPositions = new ArrayList<>();
+        this.nonPreferredPositions = new ArrayList<>();
 
         int lowerBound = 2*MAX_COORD.getY()/5;
         int upperBound = 3*MAX_COORD.getY()/5;
         for(int i =0; i < lowerBound; i++){
             for(int j =0; j < MAX_COORD.getX(); j++){
-                LESS_PREFERED_POSITIONS.add(new Vector2d(j,i));
+                nonPreferredPositions.add(new Vector2d(j,i));
             }
         }
         for(int i =lowerBound; i < upperBound; i++){
             for(int j =0; j < MAX_COORD.getX(); j++){
-                PREFERED_POSITIONS.add(new Vector2d(j,i));
+                preferredPositions.add(new Vector2d(j,i));
             }
         }
         for(int i =upperBound; i < MAX_COORD.getY(); i++){
             for(int j =0; j < MAX_COORD.getX(); j++){
-                LESS_PREFERED_POSITIONS.add(new Vector2d(j,i));
+                nonPreferredPositions.add(new Vector2d(j,i));
             }
         }
     }
@@ -38,17 +37,17 @@ public class EquatorMap extends AbstractWorldMap {
         Random rand = new Random();
         // add on prevered places
         int i =0;
-        while (i < (int) PLANTS_PER_DAY*parettoNum && !PREFERED_POSITIONS.isEmpty()) {
-            Vector2d plantpos = PREFERED_POSITIONS.get(rand.nextInt(PREFERED_POSITIONS.size()));
+        while (i < (int) PLANTS_PER_DAY*parettoNum && !preferredPositions.isEmpty()) {
+            Vector2d plantpos = preferredPositions.get(rand.nextInt(preferredPositions.size()));
                 plantMap.put(plantpos, new Plant(plantpos));
-                PREFERED_POSITIONS.remove(plantpos);
+                preferredPositions.remove(plantpos);
                 i++;
         }
         // add on other places
-        while(i<PLANTS_PER_DAY && !LESS_PREFERED_POSITIONS.isEmpty()) {
-            Vector2d plantpos = LESS_PREFERED_POSITIONS.get(rand.nextInt(PREFERED_POSITIONS.size()));
+        while(i<PLANTS_PER_DAY && !nonPreferredPositions.isEmpty()) {
+            Vector2d plantpos = nonPreferredPositions.get(rand.nextInt(preferredPositions.size()));
             plantMap.put(plantpos, new Plant(plantpos));
-            LESS_PREFERED_POSITIONS.remove(plantpos);
+            nonPreferredPositions.remove(plantpos);
             i++;
         }
     }
@@ -61,10 +60,10 @@ public class EquatorMap extends AbstractWorldMap {
     @Override
     protected void eatPlant(Vector2d pos) {
         if( isPreferedPosition(pos)){
-            PREFERED_POSITIONS.add(pos);
+            preferredPositions.add(pos);
         }
         else{
-            LESS_PREFERED_POSITIONS.add(pos);
+            nonPreferredPositions.add(pos);
         }
         plantMap.remove(pos);
     }

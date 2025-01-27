@@ -23,6 +23,8 @@ public class Simulation {
     private final AbstractWorldMap worldMap;
     private final WorldConfiguration worldConfiguration;
     private boolean running = true;
+    private int dayCount = 0;
+    private Stats statistics = new Stats();
 
     public Simulation(WorldConfiguration worldConfiguration) {
         this.worldConfiguration = worldConfiguration;
@@ -48,12 +50,21 @@ public class Simulation {
         while (running) {
             worldMap.deleteDeadAnimals();
             // plantEnergy , mutationMin , mutationMax , mutationType
-            worldMap.animalDay(worldConfiguration.plantEnergy(), worldConfiguration.animalMutationMinimum(),worldConfiguration.animalMutationMaximum(),worldConfiguration.mutationType());
+            worldMap.animalDay(worldConfiguration.plantEnergy(), worldConfiguration.animalMutationMinimum(), worldConfiguration.animalMutationMaximum(), worldConfiguration.mutationType());
             // dailyPlant grow
             worldMap.plantGrow(worldConfiguration.plantDaily());
-        }
+            dayCount++;
+            worldMap.setStatistics(statistics, dayCount);
+            try {
+                worldMap.mapChanged(statistics);
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                System.out.println(e.getMessage());
 
+            }
+        }
     }
+
     public void stop() {
         running = false;
     }

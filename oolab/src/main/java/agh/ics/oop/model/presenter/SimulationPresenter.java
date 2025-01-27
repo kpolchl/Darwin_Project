@@ -2,6 +2,7 @@ package agh.ics.oop.model.presenter;
 
 
 import agh.ics.oop.Simulation;
+import agh.ics.oop.Stats;
 import agh.ics.oop.model.observators.MapChangeListener;
 import agh.ics.oop.model.utils.Vector2d;
 import agh.ics.oop.model.worldMap.AbstractWorldMap;
@@ -115,11 +116,11 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     @Override
-    public void mapChanged(AbstractWorldMap worldMap, String message) {
+    public void mapChanged(AbstractWorldMap worldMap, Stats statistics) {
         Platform.runLater(() -> {
             clearGrid();
             drawMap();
-            changeData.setText(message);
+//            changeData.setText(message);
         });
     }
 

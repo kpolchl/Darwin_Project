@@ -5,11 +5,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import agh.ics.oop.model.utils.Vector2d;
-import agh.ics.oop.model.worldMap.EquatorMap;
 import agh.ics.oop.model.worldObjects.Plant;
 
 import java.util.HashMap;
-import java.util.List;
 
 class EquatorMapTest {
 
@@ -29,17 +27,17 @@ class EquatorMapTest {
 
         for (int y = 0; y < lowerBound; y++) {
             for (int x = 0; x < maxCoord.getX(); x++) {
-                assertTrue(map.LESS_PREFERED_POSITIONS.contains(new Vector2d(x, y)));
+                assertTrue(map.nonPreferredPositions.contains(new Vector2d(x, y)));
             }
         }
         for (int y = lowerBound; y < upperBound; y++) {
             for (int x = 0; x < maxCoord.getX(); x++) {
-                assertTrue(map.PREFERED_POSITIONS.contains(new Vector2d(x, y)));
+                assertTrue(map.preferredPositions.contains(new Vector2d(x, y)));
             }
         }
         for (int y = upperBound; y < maxCoord.getY(); y++) {
             for (int x = 0; x < maxCoord.getX(); x++) {
-                assertTrue(map.LESS_PREFERED_POSITIONS.contains(new Vector2d(x, y)));
+                assertTrue(map.nonPreferredPositions.contains(new Vector2d(x, y)));
             }
         }
     }
@@ -58,7 +56,7 @@ class EquatorMapTest {
         assertTrue(preferedPlants > 0);
 
         // Ensure remaining positions are updated
-        assertEquals(10 * 10 - plantsPerDay, map.PREFERED_POSITIONS.size() + map.LESS_PREFERED_POSITIONS.size());
+        assertEquals(10 * 10 - plantsPerDay, map.preferredPositions.size() + map.nonPreferredPositions.size());
     }
 
     @Test
@@ -74,17 +72,17 @@ class EquatorMapTest {
         assertNull(map.getPlantMap().get(pos));
 
         if (wasPreferred) {
-            assertTrue(map.PREFERED_POSITIONS.contains(pos));
+            assertTrue(map.preferredPositions.contains(pos));
         } else {
-            assertTrue(map.LESS_PREFERED_POSITIONS.contains(pos));
+            assertTrue(map.nonPreferredPositions.contains(pos));
         }
     }
 
     @Test
     void testPlantGrowNoAvailablePositions() {
         // Simulate a full map by removing all free positions
-        map.PREFERED_POSITIONS.clear();
-        map.LESS_PREFERED_POSITIONS.clear();
+        map.preferredPositions.clear();
+        map.nonPreferredPositions.clear();
 
         int plantsPerDay = 5;
         map.plantGrow(plantsPerDay);

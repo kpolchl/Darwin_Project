@@ -4,6 +4,7 @@ import agh.ics.oop.model.utils.Vector2d;
 import agh.ics.oop.model.enums.MapDirection;
 import agh.ics.oop.model.worldObjects.WorldElement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Animal implements WorldElement {
@@ -18,6 +19,9 @@ public class Animal implements WorldElement {
     private int energy;
     private int age =0;
     private int indexActiveGene;
+    private int dayOfDeath;
+    private List<Animal> children;
+    private int plantEaten=0;
 
     // Animal constructor only for the start of the simulation
     public Animal(Vector2d coordinate , int energy , int genomeLength) {
@@ -38,8 +42,23 @@ public class Animal implements WorldElement {
         this.indexActiveGene = genomGenerator.activateRandomGene();
     }
 
+    public void setDayOfDeath(int dayOfDeath) {
+        this.dayOfDeath = dayOfDeath;
+    }
+    public int getNumberOfChildren() {
+        return children.size();
+    }
+
+    public int getNumberOfDescendants(){
+        return getDescendants().size();
+    }
+
     public void setGenome(List<Integer> genome) {
         this.genome = genome;
+    }
+
+    public boolean isDead(){
+        return this.getEnergy() <=0;
     }
 
     public Vector2d getPosition() {
@@ -110,5 +129,20 @@ public class Animal implements WorldElement {
         this.coordinate = worldPosition;
         this.energy -= ENERGY_LOSS;
         updateActiveGene();
+    }
+
+    protected List<Animal> getDescendants() {
+        List<Animal> descendants = new ArrayList<>(children);
+
+        for (Animal child : children) {
+            List<Animal> childDescendants = child.getDescendants();
+            descendants.addAll(childDescendants);
         }
+        return descendants.stream()
+                .distinct()
+                .toList();
+    }
+    public void killAnimal(int dayOfDeath) {
+        this.dayOfDeath = dayOfDeath;
+    }
 }

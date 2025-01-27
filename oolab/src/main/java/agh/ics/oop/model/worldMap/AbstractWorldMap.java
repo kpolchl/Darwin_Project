@@ -25,20 +25,21 @@ public abstract class AbstractWorldMap {
     protected HashMap<Vector2d, List<Animal>> animalMap; // to track moves and breeding
     protected List<Animal> animalList = new ArrayList<Animal>();  // list of all animals on the map should be sorted by energy
     protected List<Animal> children; // temp list only for one day
+    protected ArrayList<Animal> deadAnimalsList;
     protected HashMap<Vector2d, Plant> plantMap;
     protected final Breeding breeding;
     protected List<MapChangeListener> observers = new ArrayList<>();
     protected Mutations mutations = new Mutations();
 
-    protected List<Vector2d> PREFERED_POSITIONS;
-    protected List<Vector2d> LESS_PREFERED_POSITIONS;
+    protected List<Vector2d> preferredPositions;
+    protected List<Vector2d> nonPreferredPositions;
 
 
-    public AbstractWorldMap(Vector2d MAX_COORD , int breedingPartition , int breedingEnergy) {
+    public AbstractWorldMap(Vector2d MAX_COORD, int breedingPartition, int breedingEnergy) {
         this.MIN_COORD = new Vector2d(0, 0);
         this.MAX_COORD = MAX_COORD;
         this.animalMap = new HashMap<>();
-        this.breeding = new Breeding(breedingPartition , breedingEnergy);
+        this.breeding = new Breeding(breedingPartition, breedingEnergy);
         this.plantMap = new HashMap<>();
     }
 
@@ -46,6 +47,7 @@ public abstract class AbstractWorldMap {
     public HashMap<Vector2d, Plant> getPlantMap() {
         return plantMap;
     }
+
     public abstract void plantGrow(int N);
 
     protected abstract void eatPlant(Vector2d pos);
@@ -58,10 +60,79 @@ public abstract class AbstractWorldMap {
         observers.remove(observer);
     }
 
-    public void MapChanged(Stats stats) {
+    public void mapChanged(Stats statistics) {
         for (MapChangeListener observer : observers) {
-            observer.mapChanged(this, "kij papi");
+            observer.mapChanged(this, statistics);
         }
+    }
+    protected List<Animal> getAllAnimals() {
+        List<Animal> allAnimals = new ArrayList<>(animalList);
+        allAnimals.addAll(deadAnimalsList);
+        return allAnimals;
+    }
+
+    protected int getNumberOfPlants() {
+        return plantMap.size();
+    }
+
+    protected int getNumberOfAnimals() {
+        return animalMap.size();
+    }
+
+    protected int getNumberOfFreeFields() {
+        Set<Vector2d> usedPositions = new HashSet<>(animalMap.keySet());
+        usedPositions.addAll(plantMap.keySet());
+        return MAX_COORD.getX() * MAX_COORD.getY() - usedPositions.size();
+    }
+
+    protected List<Integer> getMostPopularGenotype() {
+        Map<List<Integer>, Integer> genotypePopularity = new HashMap<>();
+
+        // Populate the genotype popularity map
+        for (Animal animal : this.animalList) {
+            genotypePopularity.merge(animal.getGenome(), 1, Integer::sum);
+        }
+
+        // Find the single most popular genotype
+        return genotypePopularity.entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue()) // Find the entry with the highest value
+                .map(Map.Entry::getKey)           // Extract the genotype (key)
+                .orElse(Collections.emptyList()); // Return an empty list if no genotype exists
+    }
+
+
+    protected double getAverageAliveAnimalsEnergy() {
+        List<Animal> allAnimals = this.getAllAnimals();
+
+        return allAnimals.stream()
+                .mapToInt(Animal::getEnergy)
+                .average() // Compute the average directly
+                .orElse(0.0); // Return 0.0 if the stream is empty
+    }
+
+    protected double getAverageLife() {
+        return deadAnimalsList.isEmpty() ? 0.00 : deadAnimalsList.stream().mapToInt(Animal::getEnergy).average().orElse(0.0) / deadAnimalsList.size();
+    }
+
+    protected double getAverageAliveAnimalsChildrenCount() {
+        List<Animal> allAnimals = this.getAllAnimals();
+
+        return allAnimals.isEmpty() ? 0.0 : (double) allAnimals.stream()
+                .map(Animal::getNumberOfChildren)
+                .reduce(Integer::sum)
+                .get() / allAnimals.size();
+    }
+
+    public void setStatistics(Stats stats, int newDay) {
+        stats.setStats(this.getNumberOfAnimals(),
+                this.getNumberOfPlants(),
+                this.getNumberOfFreeFields(),
+                newDay,
+                this.getAverageAliveAnimalsEnergy(),
+                this.getAverageLife(),
+                this.getAverageAliveAnimalsChildrenCount(),
+                this.getMostPopularGenotype());
     }
 
     public void animalEat(Animal animal, int plantEnergy) {
@@ -173,8 +244,9 @@ public abstract class AbstractWorldMap {
     public void deleteDeadAnimals() {
         int N = animalList.size();
         for (int i = N - 1; i < N; i++) {
-            if (animalList.get(i).getEnergy() <= 0) {
+            if (animalList.get(i).isDead()) {
                 animalList.remove(i);
+                deadAnimalsList.add(animalList.get(i));
             } else {
                 return;
             }
