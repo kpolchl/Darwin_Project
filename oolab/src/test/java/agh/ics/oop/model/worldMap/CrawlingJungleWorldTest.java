@@ -12,7 +12,7 @@ class CrawlingJungleWorldTest {
 
     @Test
     void testAddPreferredPositions() {
-        CrawlingJungleWorld world = new CrawlingJungleWorld(new Vector2d(5, 5));
+        CrawlingJungleWorld world = new CrawlingJungleWorld(new Vector2d(5, 5) ,1,1);
         Vector2d pos = new Vector2d(2, 2);
 
         world.plantMap.put(pos, new Plant(pos));
@@ -25,7 +25,7 @@ class CrawlingJungleWorldTest {
 
     @Test
     void testRemovePreferredPositions() {
-        CrawlingJungleWorld world = new CrawlingJungleWorld(new Vector2d(5, 5));
+        CrawlingJungleWorld world = new CrawlingJungleWorld(new Vector2d(5, 5),1,1);
         Vector2d pos = new Vector2d(2, 2);
 
         world.LESS_PREFERED_POSITIONS.add(pos);
@@ -37,7 +37,7 @@ class CrawlingJungleWorldTest {
 
     @Test
     void testPlantGrowPreferredPositions() {
-        CrawlingJungleWorld world = new CrawlingJungleWorld(new Vector2d(5, 5));
+        CrawlingJungleWorld world = new CrawlingJungleWorld(new Vector2d(5, 5) ,1,1);
         world.plantGrow(3);
 
         assertEquals(3, world.plantMap.size());
@@ -45,7 +45,7 @@ class CrawlingJungleWorldTest {
 
     @Test
     void testPlantGrowLessPreferredPositions() {
-        CrawlingJungleWorld world = new CrawlingJungleWorld(new Vector2d(5, 5));
+        CrawlingJungleWorld world = new CrawlingJungleWorld(new Vector2d(5, 5) ,1,1);
 
         // Usunięcie wszystkich preferowanych pozycji
         world.PREFERED_POSITIONS.clear();
@@ -56,7 +56,7 @@ class CrawlingJungleWorldTest {
 
     @Test
     void testEatPlant() {
-        CrawlingJungleWorld world = new CrawlingJungleWorld(new Vector2d(5, 5));
+        CrawlingJungleWorld world = new CrawlingJungleWorld(new Vector2d(5, 5),1,1);
         Vector2d pos = new Vector2d(2, 2);
 
         world.plantMap.put(pos, new Plant(pos));

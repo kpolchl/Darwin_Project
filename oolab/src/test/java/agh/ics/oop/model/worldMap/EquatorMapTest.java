@@ -18,7 +18,7 @@ class EquatorMapTest {
 
     @BeforeEach
     void setUp() {
-        map = new EquatorMap(maxCoord);
+        map = new EquatorMap(maxCoord,1,1);
     }
 
     @Test

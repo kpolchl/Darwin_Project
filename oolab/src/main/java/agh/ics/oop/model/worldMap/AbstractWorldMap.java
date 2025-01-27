@@ -38,9 +38,13 @@ public abstract class AbstractWorldMap {
         this.MAX_COORD = MAX_COORD;
         this.animalMap = new HashMap<>();
         this.breeding = new Breeding(breedingPartition , breedingEnergy);
+        this.plantMap = new HashMap<>();
     }
 
 
+    public HashMap<Vector2d, Plant> getPlantMap() {
+        return plantMap;
+    }
     public abstract void plantGrow(int N);
 
     protected abstract void eatPlant(Vector2d pos);
@@ -75,7 +79,7 @@ public abstract class AbstractWorldMap {
                     .filter(list -> !list.isEmpty())
                     .map(List::getFirst);
             if (firstAnimal.isPresent()) {
-                Animal child = breeding.breed(firstAnimal.get(), animal, minimumNumOfMutations, maximumNumOfMutations);
+                Animal child = breeding.breed(firstAnimal.get(), animal);
                 if (mutationType) {
                     for (int i = 0; i < random.nextInt(maximumNumOfMutations) + minimumNumOfMutations; i++) {
                         mutations.mutateRandomGenes(child.getGenome());
