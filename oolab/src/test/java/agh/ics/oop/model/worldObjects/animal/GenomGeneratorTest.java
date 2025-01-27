@@ -12,7 +12,7 @@ class GenomeGeneratorTest {
     @Test
     void testGenerateRandomGenome() {
         GenomGenerator generator = new GenomGenerator();
-        List<Integer> genome = generator.generateRandomGenome();
+        List<Integer> genome = generator.generateRandomGenome(10);
 
         // Sprawdź rozmiar genomu
         assertEquals(10, genome.size(), "Genom powinien mieć dokładnie 10 genów.");
