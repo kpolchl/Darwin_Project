@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="agh.ics.oop.controller.SimulationController"
+            minHeight="600.0" minWidth="900.0">
+
+    <!-- Centralna mapa -->
+    <center>
+        <GridPane fx:id="mapGrid" gridLinesVisible="true" alignment="CENTER"
+                  style="-fx-border-color: black; -fx-padding: 10;"/>
+    </center>
+
+    <!-- Statystyki -->
+    <right>
+        <VBox spacing="10" style="-fx-padding: 10;">
+            <Label text="Simulation Statistics" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+            <Label fx:id="animalCountLabel" text="Animals: 0"/>
+            <Label fx:id="grassCountLabel" text="Grass: 0"/>
+            <Label fx:id="averageEnergyLabel" text="Average Energy: 0"/>
+            <Label fx:id="trackedAnimalLabel" text="Tracked Animal: None"/>
+        </VBox>
+    </right>
+
+    <!-- Przyciski kontrolne -->
+    <bottom>
+        <HBox spacing="10" alignment="CENTER" style="-fx-padding: 10;">
+<!--            <Button text="Start" onAction="#startSimulation" style="-fx-background-color: #4caf50; -fx-text-fill: white;"/>-->
+<!--            <Button text="Stop" onAction="#stopSimulation" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>-->
+<!--            <Button text="Track Animal" onAction="#trackAnimal"/>-->
+        </HBox>
+    </bottom>
+
+</BorderPane>

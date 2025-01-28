@@ -133,13 +133,6 @@ public class SimulationPresenter implements MapChangeListener {
         new Thread(() -> {
             try {
                 String userInput = input.getText();
-//                AbstractWorldMap recWorld =  new EquatorMap();
-
-//                Simulation Simulation = new Simulation();
-//                SimulationEngine simulationEngine = new SimulationEngine(List.of(recSimulation));
-//                recWorld.addObserver(this); //add observer
-//                this.setWorldMap(recWorld);
-//                simulationEngine.runSync(); // run simulations
             } catch (IllegalArgumentException e) {
                 Platform.runLater(() -> changeData.setText("Invalid input: " + e.getMessage()));
             }
