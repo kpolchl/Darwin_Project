@@ -10,6 +10,7 @@ import agh.ics.oop.model.worldObjects.animal.Animal;
 import agh.ics.oop.model.worldObjects.animal.Breeding;
 import agh.ics.oop.model.worldObjects.animal.Mutations;
 
+
 import java.util.*;
 
 /// breeding
@@ -104,7 +105,7 @@ public abstract class AbstractWorldMap {
     protected int getNumberOfFreeFields() {
         Set<Vector2d> usedPositions = new HashSet<>(animalMap.keySet());
         usedPositions.addAll(plantMap.keySet());
-        return MAX_COORD.getX() * MAX_COORD.getY() - usedPositions.size();
+        return (MAX_COORD.getX()+1) * (MAX_COORD.getY()+1) - usedPositions.size();
     }
 
     protected List<Integer> getMostPopularGenotype() {
@@ -122,6 +123,24 @@ public abstract class AbstractWorldMap {
                 .map(Map.Entry::getKey)           // Extract the genotype (key)
                 .orElse(Collections.emptyList()); // Return an empty list if no genotype exists
     }
+
+    protected List<List<Integer>> getTopThreePopularGenotypes() {
+        Map<List<Integer>, Integer> genotypePopularity = new HashMap<>();
+
+        // Zliczanie wystąpień każdego genotypu
+        for (Animal animal : this.animalList) {
+            genotypePopularity.merge(animal.getGenome(), 1, Integer::sum);
+        }
+
+        // Sortowanie genotypów według liczby wystąpień
+        return genotypePopularity.entrySet()
+                .stream()
+                .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue())) // Sortowanie malejąco po wartości
+                .limit(3) // Pobranie maksymalnie trzech najpopularniejszych
+                .map(Map.Entry::getKey) // Pobranie genotypów (kluczy)
+                .toList(); // Konwersja na listę
+    }
+
 
 
     protected double getAverageAliveAnimalsEnergy() {
@@ -160,7 +179,7 @@ public abstract class AbstractWorldMap {
                 this.getAverageAliveAnimalsEnergy(),
                 this.getAverageLife(),
                 this.getAverageAliveAnimalsChildrenCount(),
-                this.getMostPopularGenotype());
+                this.getTopThreePopularGenotypes());
     }
 
     public void animalEat(Animal animal, int plantEnergy) {
@@ -266,6 +285,7 @@ public abstract class AbstractWorldMap {
     /// eat
     /// breed
     public void animalDay(int plantEnergy, int minimumNumOfMutations, int maximumNumOfMutations, boolean mutationType) { // ta logika jest troche upośledzona dlaczego nie dodaje od razu przy ruchu trawy ale huj nie ruszam już przy testach się zobaczy czy działa tak jak miało
+
 
         animalList.forEach(this::moveBorderCondition); // move all animals
 

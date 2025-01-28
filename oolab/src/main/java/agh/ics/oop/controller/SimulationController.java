@@ -23,6 +23,14 @@ import javafx.stage.Stage;
 public class SimulationController implements MapChangeListener {
 
     @FXML
+    private Label topOneGenomeLabel;
+    @FXML
+    private Label topTwoGenomeLabel;
+    @FXML
+    private Label topThreeGenomeLabel;
+    @FXML
+    private Label dayCount;
+    @FXML
     private Button startButton;
     @FXML
     private Button stopButton;
@@ -56,6 +64,7 @@ public class SimulationController implements MapChangeListener {
         initializeButtons();
         startSimulation();
     }
+
     private void initializeButtons() {
         // Don't create new buttons, just configure the existing FXML ones
         stopButton.setOnAction(event -> stopSimulation());
@@ -100,18 +109,19 @@ public class SimulationController implements MapChangeListener {
             stopButton.setDisable(false);
         }
     }
+
     private void initializeGrid() {
         mapGrid.getColumnConstraints().clear();
         mapGrid.getRowConstraints().clear();
 
         // Add column constraints (including header column)
-        for (int i = 0; i <= worldConfiguration.maxVector().getX()+1; i++) {
+        for (int i = 0; i <= worldConfiguration.maxVector().getX() + 1; i++) {
             ColumnConstraints column = new ColumnConstraints(CELL_WIDTH);
             mapGrid.getColumnConstraints().add(column);
         }
 
         // Add row constraints (including header row)
-        for (int i = 0; i <= worldConfiguration.maxVector().getY()+1; i++) {
+        for (int i = 0; i <= worldConfiguration.maxVector().getY() + 1; i++) {
             RowConstraints row = new RowConstraints(CELL_HEIGHT);
             mapGrid.getRowConstraints().add(row);
         }
@@ -180,12 +190,18 @@ public class SimulationController implements MapChangeListener {
 
     private void updateStats(Stats stats) {
         // Format numbers to 2 decimal places for floating point values
+        dayCount.setText("Day: " + stats.getDayCount());
         animalCountLabel.setText("Animals: " + stats.getAnimalCount());
         plantCountLabel.setText("Plants: " + stats.getPlantCount());
         freeSpaceCountLabel.setText("Free Fields: " + stats.getFreeSpaceCount());
-        averageLivingEnergyLabel.setText(String.format("Average Energy: %.2f", stats.getAvgLivingEnergy()));
-        averageLifeSpanLabel.setText(String.format("Average Lifespan: %.2f", stats.getAvgLifespan()));
-        averageChildrenCountLabel.setText(String.format("Average Children: %.2f", stats.getAvgChildren()));
+        averageLivingEnergyLabel.setText("Average Energy: " + String.format("%.2f", stats.getAvgLivingEnergy()));
+        averageLifeSpanLabel.setText("Average Lifespan: " + String.format("%.2f", stats.getAvgLifespan()));
+        averageChildrenCountLabel.setText("Average Children: " + String.format("%.2f", stats.getAvgChildren()));
+
+        // Aktualizacja genotypów
+        topOneGenomeLabel.setText("Top 1 Genome: " + stats.getTopOneGenome());
+        topTwoGenomeLabel.setText("Top 2 Genome: " + stats.getTopTwoGenome());
+        topThreeGenomeLabel.setText("Top 3 Genome: " + stats.getTopThreeGenome());
 
 //        // Update tracked animal info if available
 //        if (stats.getTrackedAnimal() != null) {
