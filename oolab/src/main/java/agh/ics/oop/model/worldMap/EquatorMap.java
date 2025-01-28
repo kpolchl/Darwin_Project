@@ -22,8 +22,8 @@ public class EquatorMap extends AbstractWorldMap {
         int lowerBound = (int) (MAX_COORD.getY() * LOWER_BOUND_RATIO);
         int upperBound = (int) (MAX_COORD.getY() * UPPER_BOUND_RATIO);
 
-        for (int i = 0; i < MAX_COORD.getY(); i++) {
-            for (int j = 0; j < MAX_COORD.getX(); j++) {
+        for (int i = 0; i < MAX_COORD.getY()+1; i++) {
+            for (int j = 0; j < MAX_COORD.getX()+1; j++) {
                 Vector2d pos = new Vector2d(j, i);
                 if (i >= lowerBound && i < upperBound) {
                     preferredPositions.add(pos);

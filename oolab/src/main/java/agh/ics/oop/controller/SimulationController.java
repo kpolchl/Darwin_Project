@@ -105,13 +105,13 @@ public class SimulationController implements MapChangeListener {
         mapGrid.getRowConstraints().clear();
 
         // Add column constraints (including header column)
-        for (int i = 0; i <= worldConfiguration.maxVector().getX() + 1; i++) {
+        for (int i = 0; i <= worldConfiguration.maxVector().getX()+1; i++) {
             ColumnConstraints column = new ColumnConstraints(CELL_WIDTH);
             mapGrid.getColumnConstraints().add(column);
         }
 
         // Add row constraints (including header row)
-        for (int i = 0; i <= worldConfiguration.maxVector().getY() + 1; i++) {
+        for (int i = 0; i <= worldConfiguration.maxVector().getY()+1; i++) {
             RowConstraints row = new RowConstraints(CELL_HEIGHT);
             mapGrid.getRowConstraints().add(row);
         }

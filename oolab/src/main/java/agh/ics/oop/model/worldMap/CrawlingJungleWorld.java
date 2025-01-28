@@ -17,8 +17,8 @@ public class CrawlingJungleWorld extends AbstractWorldMap {
         this.preferredPositions = new HashSet<>();
         this.nonPreferredPositions = new HashSet<>();
 
-        for (int i = 0; i < MAX_COORD.getX(); i++) {
-            for (int j = 0; j < MAX_COORD.getY(); j++) {
+        for (int i = 0; i < MAX_COORD.getX()+1; i++) {
+            for (int j = 0; j < MAX_COORD.getY()+1; j++) {
                 nonPreferredPositions.add(new Vector2d(i, j));
             }
         }
