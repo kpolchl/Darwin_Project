@@ -112,11 +112,7 @@ public class Animal implements WorldElement {
     }
 
     public String toString(){
-        return this.direction.toString() +
-                this.genome.toString() +
-                this.energy  +
-                this.coordinate.toString() +
-                this.indexActiveGene;
+        return this.direction.toString();
     }
 
     /// poruszanie się

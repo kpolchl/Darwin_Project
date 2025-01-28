@@ -23,9 +23,13 @@
         <VBox spacing="10" style="-fx-padding: 10;">
             <Label text="Simulation Statistics" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
             <Label fx:id="animalCountLabel" text="Animals: 0"/>
-            <Label fx:id="grassCountLabel" text="Grass: 0"/>
-            <Label fx:id="averageEnergyLabel" text="Average Energy: 0"/>
+            <Label fx:id="plantCountLabel" text="Plant: 0"/>
+            <Label fx:id="freeSpaceCountLabel" text="Free spaces: 0"/>
+            <Label fx:id="averageLivingEnergyLabel" text="Average living energy:"/>
+            <Label fx:id="averageLifeSpanLabel" text="Average life span:"/>
+            <Label fx:id="averageChildrenCountLabel" text="Average children count:"/>
             <Label fx:id="trackedAnimalLabel" text="Tracked Animal: None"/>
+
         </VBox>
     </right>
 

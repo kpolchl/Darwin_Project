@@ -97,7 +97,7 @@ public class ParametersController {
             WorldConfiguration worldConfiguration = getWorldConfiguration();
 
             // Open the simulation window and pass the configuration
-            SimulationController.openSimulationWindow(worldConfiguration);
+            SimulationController.openNewSimulation(worldConfiguration);
         } catch (IllegalArgumentException e) {
             // Show an error message if validation fails
             Alert alert = new Alert(Alert.AlertType.ERROR);

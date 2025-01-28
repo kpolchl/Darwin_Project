@@ -200,7 +200,10 @@ public abstract class AbstractWorldMap {
     }
 
     public WorldElement objectAt(Vector2d position) {
-        if (animalMap.get(position) != null) return animalMap.get(position).getFirst();
+        if (animalMap.get(position) != null)
+            return animalMap.get(position).getFirst();
+        else if(plantMap.get(position) != null)
+            return plantMap.get(position);
         return null;
     }
 
