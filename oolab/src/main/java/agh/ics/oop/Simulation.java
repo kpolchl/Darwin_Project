@@ -6,8 +6,8 @@ import agh.ics.oop.model.worldMap.EquatorMap;
 import agh.ics.oop.records.WorldConfiguration;
 
 public class Simulation {
-    private  AbstractWorldMap worldMap;
-    private  WorldConfiguration worldConfiguration;
+    private AbstractWorldMap worldMap;
+    private WorldConfiguration worldConfiguration;
     private boolean running = true;
     private int dayCount = 0;
     private Stats statistics = new Stats();
@@ -20,7 +20,7 @@ public class Simulation {
                 new CrawlingJungleWorld(worldConfiguration.maxVector(), worldConfiguration.animalEnergyPartition(), worldConfiguration.animalEnergyToReproduce());
 
         // starting animal numbers
-        worldMap.createStartingAnimals(worldConfiguration.animalStartingNumber() , worldConfiguration.animalStartingEnergy() , worldConfiguration.animalGenomeLength());
+        worldMap.createStartingAnimals(worldConfiguration.animalStartingNumber(), worldConfiguration.animalStartingEnergy(), worldConfiguration.animalGenomeLength());
         //starting plants
         worldMap.plantGrow(worldConfiguration.plantStartingNumber());
         System.out.println("Simulation started");
@@ -28,11 +28,9 @@ public class Simulation {
     }
 
 
-
-
     public void run() {
         while (running) {
-            System.out.println("simulation day"+dayCount);
+            System.out.println("simulation day" + dayCount);
             worldMap.deleteDeadAnimals();
             // plantEnergy , mutationMin , mutationMax , mutationType
             worldMap.animalDay(worldConfiguration.plantEnergy(), worldConfiguration.animalMutationMinimum(), worldConfiguration.animalMutationMaximum(), worldConfiguration.mutationType());
@@ -50,11 +48,12 @@ public class Simulation {
             }
         }
     }
+
+    public void stop() {
+        running = false;
+    }
 }
 
 
-//    public void stop() {
-//        running = false;
-//    }
 
 

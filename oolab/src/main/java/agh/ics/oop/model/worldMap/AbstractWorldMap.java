@@ -51,6 +51,13 @@ public abstract class AbstractWorldMap {
         return plantMap;
     }
 
+    public int getWidth() {
+        return MAX_COORD.getX();
+    }
+    public int getHeight() {
+        return MAX_COORD.getY();
+    }
+
     public void setDeadAnimalsList(List<Animal> deadAnimalsList) {
         this.deadAnimalsList = deadAnimalsList;
     }
