@@ -1,5 +1,7 @@
 package agh.ics.oop.controller;
 
+import agh.ics.oop.model.utils.Vector2d;
+import agh.ics.oop.records.WorldConfiguration;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -8,6 +10,12 @@ public class ParametersController {
 
     public Button startSimulationButton;
     @FXML
+    private TextField energyPartition;
+    @FXML
+    private TextField animalStartingEnergy;
+    @FXML
+    private TextField plantStartingNumber;
+    @FXML
     private TextField mapWidth;
     @FXML
     private TextField mapHeight;
@@ -15,8 +23,6 @@ public class ParametersController {
     private ChoiceBox<String> mapVariant;
     @FXML
     private TextField initialAnimals;
-    @FXML
-    private TextField startingEnergy;
     @FXML
     private TextField reproductionEnergy;
     @FXML
@@ -33,32 +39,56 @@ public class ParametersController {
     private TextField genomeLength;
 
     @FXML
-    private void onStartSimulation() {
+    private WorldConfiguration getWorldConfiguration() throws IllegalArgumentException {
         try {
-            // Pobierz wartości z pól tekstowych
-            int width = Integer.parseInt(mapWidth.getText());
-            int height = Integer.parseInt(mapHeight.getText());
-            String mapType = mapVariant.getValue();
-            int animals = Integer.parseInt(initialAnimals.getText());
-            int energy = Integer.parseInt(startingEnergy.getText());
-            int reproductionThreshold = Integer.parseInt(reproductionEnergy.getText());
+            // Parse values from UI components
+            int mapWidthValue = Integer.parseInt(mapWidth.getText());
+            int mapHeightValue = Integer.parseInt(mapHeight.getText());
+            int plantStartingNumberValue = Integer.parseInt(plantStartingNumber.getText());
+            int dailyPlantGrowthValue = Integer.parseInt(dailyPlantGrowth.getText());
             int plantEnergyValue = Integer.parseInt(plantEnergy.getText());
-            int dailyGrowth = Integer.parseInt(dailyPlantGrowth.getText());
-            String mutationType = mutationVariant.getValue();
-            int minMutate = Integer.parseInt(minMutations.getText());
-            int maxMutate = Integer.parseInt(maxMutations.getText());
-            int genomeLen = Integer.parseInt(genomeLength.getText());
-            System.out.println(width + height);
+            int animalStartingEnergyValue = Integer.parseInt(animalStartingEnergy.getText());
+            int energyPartitionValue = Integer.parseInt(energyPartition.getText());
+            int initialAnimalsValue = Integer.parseInt(initialAnimals.getText());
+            int reproductionEnergyValue = Integer.parseInt(reproductionEnergy.getText());
+            int minMutationsValue = Integer.parseInt(minMutations.getText());
+            int maxMutationsValue = Integer.parseInt(maxMutations.getText());
+            int genomeLengthValue = Integer.parseInt(genomeLength.getText());
 
-            // Przekazanie parametrów do symulacji
-            // TODO: Użyj KLASA1 i KLASA2 do uruchomienia symulacji z tymi parametrami
+            // Get selected values from ChoiceBox components
+            boolean mapTypeValue = mapVariant.getValue().equals("Equator");
+            boolean mutationTypeValue = mutationVariant.getValue().equals("Random");
 
-            // Otwórz nowe okno symulacji
-            SimulationController.openSimulationWindow();
+            // Validate input values
+            if (mapWidthValue <= 0 || mapHeightValue <= 0 || plantStartingNumberValue < 0 || dailyPlantGrowthValue < 0 ||
+                    plantEnergyValue <= 0 || animalStartingEnergyValue <= 0 || energyPartitionValue <= 0 ||
+                    initialAnimalsValue <= 0 || reproductionEnergyValue <= 0 || minMutationsValue < 0 ||
+                    maxMutationsValue < 0 || genomeLengthValue <= 0) {
+                throw new IllegalArgumentException("All numeric values must be positive.");
+            }
+
+            // Create and return a new WorldConfiguration object
+            return new WorldConfiguration(
+                    new Vector2d(mapWidthValue, mapHeightValue),
+                    plantStartingNumberValue,
+                    dailyPlantGrowthValue,
+                    plantEnergyValue,
+                    initialAnimalsValue,
+                    animalStartingEnergyValue,
+                    energyPartitionValue,
+                    reproductionEnergyValue,
+                    minMutationsValue,
+                    maxMutationsValue,
+                    genomeLengthValue,
+                    mapTypeValue,
+                    mutationTypeValue
+            );
         } catch (NumberFormatException e) {
-            // Obsługa błędów wprowadzania danych
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter valid numeric values.");
-            alert.showAndWait();
+            throw new IllegalArgumentException("Invalid input: All fields must contain numeric values.");
         }
+    }
+
+    private void startSimulation() {
+        SimulationController.openSimulationWindow();
     }
 }

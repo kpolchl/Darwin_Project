@@ -1,5 +1,6 @@
 package agh.ics.oop.controller;
 
+import agh.ics.oop.records.WorldConfiguration;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,6 +12,7 @@ import java.io.IOException;
 
 public class SimulationController {
 
+    private WorldConfiguration worldConfiguration;
 
     public void startSimulation(ActionEvent event) {
         System.out.println("Simulation started!");
