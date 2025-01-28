@@ -13,7 +13,7 @@ public class Animal implements WorldElement {
     private final Mutations mutations = new Mutations();
     private final GenomGenerator genomGenerator = new GenomGenerator();
 
-    private   List<Integer> genome;
+    private List<Integer> genome;
     private MapDirection direction;
     private Vector2d coordinate;
     private int energy;
@@ -35,13 +35,13 @@ public class Animal implements WorldElement {
         this.children = new ArrayList<>();
     }
     // Animal constructor for mating
-    public Animal(Vector2d coordinate, int energy , List <Integer> genome ) {
+    public Animal(Vector2d coordinate, int energy , List<Integer> genome ) {
         this.direction = randomDirection();
         this.coordinate = coordinate;
         this.energy = energy;
         this.genome = genome;
         this.age =0;
-        this.indexActiveGene = genomGenerator.activateRandomGene();
+        this.indexActiveGene = genomGenerator.activateRandomGene(genome.size());
         this.plantEaten = 0;
         this.children = new ArrayList<>();
     }

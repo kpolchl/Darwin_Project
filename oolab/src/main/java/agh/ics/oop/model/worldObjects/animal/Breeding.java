@@ -3,6 +3,7 @@ package agh.ics.oop.model.worldObjects.animal;
 import agh.ics.oop.model.exceptions.BreedignError;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 public class Breeding {
@@ -16,7 +17,7 @@ public class Breeding {
         this.BREEDING_ENERGY = BREEDING_ENERGY;
     }
 
-    private boolean canBreed(Animal animal) {
+    public boolean canBreed(Animal animal) {
         return animal.getEnergy()>BREEDING_ENERGY;
     }
 
@@ -41,4 +42,5 @@ public class Breeding {
         }
         throw new BreedignError(father, mother);
     }
+
 }

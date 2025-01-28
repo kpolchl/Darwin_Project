@@ -25,14 +25,12 @@ public abstract class AbstractWorldMap {
     protected HashMap<Vector2d, List<Animal>> animalMap; // to track moves and breeding
     protected List<Animal> animalList = new ArrayList<Animal>();  // list of all animals on the map should be sorted by energy
     protected List<Animal> children; // temp list only for one day
-    protected ArrayList<Animal> deadAnimalsList;
+    protected List<Animal> deadAnimalsList = new ArrayList<Animal>();
     protected HashMap<Vector2d, Plant> plantMap;
     protected final Breeding breeding;
-    protected List<MapChangeListener> observers = new ArrayList<>();
+    protected List<MapChangeListener> observers = new ArrayList<MapChangeListener>();
     protected Mutations mutations = new Mutations();
 
-    protected List<Vector2d> preferredPositions;
-    protected List<Vector2d> nonPreferredPositions;
 
 
     public AbstractWorldMap(Vector2d MAX_COORD, int breedingPartition, int breedingEnergy) {
@@ -41,7 +39,6 @@ public abstract class AbstractWorldMap {
         this.animalMap = new HashMap<>();
         this.breeding = new Breeding(breedingPartition, breedingEnergy);
         this.plantMap = new HashMap<>();
-        this.deadAnimalsList = new ArrayList<>();
         this.children = new ArrayList<>();
     }
 
@@ -49,8 +46,13 @@ public abstract class AbstractWorldMap {
         return animalList;
     }
 
+
     public HashMap<Vector2d, Plant> getPlantMap() {
         return plantMap;
+    }
+
+    public void setDeadAnimalsList(List<Animal> deadAnimalsList) {
+        this.deadAnimalsList = deadAnimalsList;
     }
 
     public abstract void plantGrow(int N);
@@ -155,22 +157,25 @@ public abstract class AbstractWorldMap {
 
     public void animalBreed(Animal animal, int minimumNumOfMutations, int maximumNumOfMutations, boolean mutationType) {
         Random random = new Random();
-        if (animalMap.containsKey(animal.getPosition()) && animalMap.get(animal.getPosition()).size() == 1) {
+        if (animalMap.containsKey(animal.getPosition()) && animalMap.get(animal.getPosition()).size() == 2) {
 
-            Optional<Animal> firstAnimal = Optional.ofNullable(animalMap.get(animal.getPosition())) // nw też do stestowania na pewno
+            Optional<Animal> firstAnimal = Optional.ofNullable(animalMap.get(animal.getPosition()))
                     .filter(list -> !list.isEmpty())
                     .map(List::getFirst);
-            if (firstAnimal.isPresent()) {
+            if (firstAnimal.isPresent() && breeding.canBreed(animal) && breeding.canBreed(firstAnimal.get())) {
                 Animal child = breeding.breed(firstAnimal.get(), animal);
+                List<Integer> childGenome = child.getGenome();
+                int numOfMutations = random.nextInt(maximumNumOfMutations) + minimumNumOfMutations;
                 if (mutationType) {
-                    for (int i = 0; i < random.nextInt(maximumNumOfMutations) + minimumNumOfMutations; i++) {
-                        mutations.mutateRandomGenes(child.getGenome());
+                    for (int i = 0; i < numOfMutations; i++) {
+                        mutations.mutateRandomGenes(childGenome);
                     }
                 } else {
-                    for (int i = 0; i < random.nextInt(maximumNumOfMutations) + minimumNumOfMutations; i++) {
-                        mutations.mutateRandomGenes(child.getGenome());
+                    for (int i = 0; i < numOfMutations; i++) {
+                        mutations.mutateRandomGenes(childGenome);
                     }
                 }
+                child.setGenome(childGenome);
                 children.add(child);
             }
 
@@ -178,7 +183,7 @@ public abstract class AbstractWorldMap {
     }
 
 
-    public void placeAnimal(Animal animal) {
+    public void placeAnimalonMap(Animal animal) {
         animalMap.computeIfAbsent(animal.getPosition(), k -> new ArrayList<>()).add(animal); // do stestowania bo nie wierzę że to działa
     }
 
@@ -210,6 +215,10 @@ public abstract class AbstractWorldMap {
         return cord.getX() > MAX_COORD.getX();
     }
 
+    public void setAnimalList(List<Animal> animalList) {
+        this.animalList = animalList;
+    }
+
     // handle animal move on the map
     public void moveBorderCondition(Animal animal) {
 
@@ -228,7 +237,7 @@ public abstract class AbstractWorldMap {
         }
         animalMap.remove(animal.getPosition()); //susy baka nie wiem
         animal.move(CordAfterMove);
-        placeAnimal(animal); // susy baka 
+        placeAnimalonMap(animal); // susy baka
 
     }
 
@@ -256,15 +265,17 @@ public abstract class AbstractWorldMap {
 
     public void deleteDeadAnimals() {
         int N = animalList.size();
-        for (int i = N - 1; i <= 0; i++) {
-            if (animalList.get(i).isDead()) {
+        for (int i = N - 1; i >= 0; i--) {
+            Animal animal = animalList.get(i);
+            if (animal.isDead()) {
+               animalMap.remove(animal.getPosition());
                 animalList.remove(i);
-                deadAnimalsList.add(animalList.get(i));
-            } else {
-                return;
+                deadAnimalsList.add(animal);
             }
         }
+
     }
+
 
     public void createStartingAnimals(int numberOfAnimals, int startingEnergy, int genomeLength) {
         RandomPositionGenerator randGenerator = new RandomPositionGenerator(MAX_COORD.getX(), MAX_COORD.getY(), numberOfAnimals);

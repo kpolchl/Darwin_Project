@@ -3,85 +3,84 @@ package agh.ics.oop.model.worldMap;
 import agh.ics.oop.model.utils.Vector2d;
 import agh.ics.oop.model.worldObjects.Plant;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 public class CrawlingJungleWorld extends AbstractWorldMap {
 
-    public CrawlingJungleWorld(Vector2d MAX_COORD , int breedingPartition , int breedingEnergy) {
-        super(MAX_COORD , breedingPartition , breedingEnergy);
-        this.preferredPositions = new ArrayList<>();
-        this.nonPreferredPositions = new ArrayList<>();
+    private final Set<Vector2d> preferredPositions;
+    private final Set<Vector2d> nonPreferredPositions;
 
-        for(int i = 0; i < MAX_COORD.getX(); i++) {
-            for(int j = 0; j < MAX_COORD.getY(); j++) {
+    public CrawlingJungleWorld(Vector2d MAX_COORD, int breedingPartition, int breedingEnergy) {
+        super(MAX_COORD, breedingPartition, breedingEnergy);
+        this.preferredPositions = new HashSet<>();
+        this.nonPreferredPositions = new HashSet<>();
+
+        for (int i = 0; i < MAX_COORD.getX(); i++) {
+            for (int j = 0; j < MAX_COORD.getY(); j++) {
                 nonPreferredPositions.add(new Vector2d(i, j));
             }
         }
-
-
     }
 
-    // zwróć na to uwage
-    void addPreferredPositions(Vector2d position) {
+    private void addPreferredPositions(Vector2d position) {
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
                 if (dx == 0 && dy == 0) continue;
 
                 Vector2d newPosition = new Vector2d(position.getX() + dx, position.getY() + dy);
-                if (plantMap.get(newPosition) == null && newPosition.precedes(MAX_COORD) && newPosition.follows(MIN_COORD) && !preferredPositions.contains(newPosition)) {
+                if (isValidPosition(newPosition) && !preferredPositions.contains(newPosition)) {
                     preferredPositions.add(newPosition);
                 }
             }
         }
     }
 
-    // oraz na to
-    void removePreferredPositions(Vector2d position) {
+    private void removePreferredPositions(Vector2d position) {
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
                 if (dx == 0 && dy == 0) continue;
 
                 Vector2d newPosition = new Vector2d(position.getX() + dx, position.getY() + dy);
-
-                if (newPosition.precedes(MIN_COORD) && newPosition.follows(MIN_COORD)) {
+                if (isValidPosition(newPosition)) {
                     preferredPositions.remove(newPosition);
-                    if (!nonPreferredPositions.contains(newPosition)) { // if not necesssary should be checked better save than sorry
-                        nonPreferredPositions.add(newPosition);
-                    }
-
+                    nonPreferredPositions.add(newPosition);
                 }
             }
         }
     }
 
+    private boolean isValidPosition(Vector2d position) {
+        return position.precedes(MAX_COORD) && position.follows(MIN_COORD) && plantMap.get(position) == null;
+    }
+
     @Override
     public void plantGrow(int PLANTS_PER_DAY) {
-        double parrettNum =0.8;
-        int i =0;
+        double preferredRatio = 0.8;
+        int preferredPlants = (int) (PLANTS_PER_DAY * preferredRatio);
+        int nonPreferredPlants = PLANTS_PER_DAY - preferredPlants;
+
         Random rand = new Random();
-        while (i < (int) PLANTS_PER_DAY*parrettNum && !nonPreferredPositions.isEmpty() ) {
-            if(preferredPositions.isEmpty()) {
-                Vector2d newPlantPos = nonPreferredPositions.get(rand.nextInt(nonPreferredPositions.size()));
-                plantMap.put(newPlantPos, new Plant(newPlantPos));
-                nonPreferredPositions.remove(newPlantPos);
-                addPreferredPositions(newPlantPos);
-            }
-            else{
-                Vector2d newPlantPos = preferredPositions.get(rand.nextInt(preferredPositions.size()));
-                preferredPositions.remove(newPlantPos);
-                plantMap.put(newPlantPos, new Plant(newPlantPos));
-                addPreferredPositions(newPlantPos);
-            }
-            i++;
-        }
-        while( i <PLANTS_PER_DAY && !nonPreferredPositions.isEmpty()) {
-            Vector2d newPlantPos = preferredPositions.get(rand.nextInt(preferredPositions.size()));
-            preferredPositions.remove(newPlantPos);
+
+        growPlantsInPositions(preferredPlants, preferredPositions, rand);
+        growPlantsInPositions(nonPreferredPlants, nonPreferredPositions, rand);
+    }
+
+    private void growPlantsInPositions(int numberOfPlants, Set<Vector2d> positions, Random rand) {
+        int i = 0;
+        while (i < numberOfPlants && !positions.isEmpty()) {
+            Vector2d newPlantPos = getRandomPosition(positions, rand);
+            positions.remove(newPlantPos);
             plantMap.put(newPlantPos, new Plant(newPlantPos));
             addPreferredPositions(newPlantPos);
             i++;
         }
+    }
+
+    private Vector2d getRandomPosition(Set<Vector2d> positions, Random rand) {
+        int index = rand.nextInt(positions.size());
+        return positions.stream().skip(index).findFirst().orElseThrow();
     }
 
     @Override
