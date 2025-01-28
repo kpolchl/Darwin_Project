@@ -5,6 +5,7 @@ import agh.ics.oop.model.observators.MapChangeListener;
 import agh.ics.oop.model.utils.RandomPositionGenerator;
 import agh.ics.oop.model.worldObjects.Plant;
 import agh.ics.oop.model.utils.Vector2d;
+import agh.ics.oop.model.worldObjects.WorldElement;
 import agh.ics.oop.model.worldObjects.animal.Animal;
 import agh.ics.oop.model.worldObjects.animal.Breeding;
 import agh.ics.oop.model.worldObjects.animal.Mutations;
@@ -24,27 +25,36 @@ public abstract class AbstractWorldMap {
     protected HashMap<Vector2d, List<Animal>> animalMap; // to track moves and breeding
     protected List<Animal> animalList = new ArrayList<Animal>();  // list of all animals on the map should be sorted by energy
     protected List<Animal> children; // temp list only for one day
+    protected List<Animal> deadAnimalsList = new ArrayList<Animal>();
     protected HashMap<Vector2d, Plant> plantMap;
     protected final Breeding breeding;
-    protected List<MapChangeListener> observers = new ArrayList<>();
+    protected List<MapChangeListener> observers = new ArrayList<MapChangeListener>();
     protected Mutations mutations = new Mutations();
 
-    protected List<Vector2d> PREFERED_POSITIONS;
-    protected List<Vector2d> LESS_PREFERED_POSITIONS;
 
 
-    public AbstractWorldMap(Vector2d MAX_COORD , int breedingPartition , int breedingEnergy) {
+    public AbstractWorldMap(Vector2d MAX_COORD, int breedingPartition, int breedingEnergy) {
         this.MIN_COORD = new Vector2d(0, 0);
         this.MAX_COORD = MAX_COORD;
         this.animalMap = new HashMap<>();
-        this.breeding = new Breeding(breedingPartition , breedingEnergy);
+        this.breeding = new Breeding(breedingPartition, breedingEnergy);
         this.plantMap = new HashMap<>();
+        this.children = new ArrayList<>();
+    }
+
+    public List<Animal> getAnimalList() {
+        return animalList;
     }
 
 
     public HashMap<Vector2d, Plant> getPlantMap() {
         return plantMap;
     }
+
+    public void setDeadAnimalsList(List<Animal> deadAnimalsList) {
+        this.deadAnimalsList = deadAnimalsList;
+    }
+
     public abstract void plantGrow(int N);
 
     protected abstract void eatPlant(Vector2d pos);
@@ -57,38 +67,115 @@ public abstract class AbstractWorldMap {
         observers.remove(observer);
     }
 
-    public void MapChanged(Stats stats) {
+    public void mapChanged(Stats statistics) {
         for (MapChangeListener observer : observers) {
-            observer.mapChanged(this, "kij papi");
+            observer.mapChanged(this, statistics);
         }
+    }
+
+    public List<Animal> getChildren() {
+        return children;
+    }
+
+    protected List<Animal> getAllAnimals() {
+        List<Animal> allAnimals = new ArrayList<>(animalList);
+        allAnimals.addAll(deadAnimalsList);
+        return allAnimals;
+    }
+
+    protected int getNumberOfPlants() {
+        return plantMap.size();
+    }
+
+    protected int getNumberOfAnimals() {
+        return animalMap.size();
+    }
+
+    protected int getNumberOfFreeFields() {
+        Set<Vector2d> usedPositions = new HashSet<>(animalMap.keySet());
+        usedPositions.addAll(plantMap.keySet());
+        return MAX_COORD.getX() * MAX_COORD.getY() - usedPositions.size();
+    }
+
+    protected List<Integer> getMostPopularGenotype() {
+        Map<List<Integer>, Integer> genotypePopularity = new HashMap<>();
+
+        // Populate the genotype popularity map
+        for (Animal animal : this.animalList) {
+            genotypePopularity.merge(animal.getGenome(), 1, Integer::sum);
+        }
+
+        // Find the single most popular genotype
+        return genotypePopularity.entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue()) // Find the entry with the highest value
+                .map(Map.Entry::getKey)           // Extract the genotype (key)
+                .orElse(Collections.emptyList()); // Return an empty list if no genotype exists
+    }
+
+
+    protected double getAverageAliveAnimalsEnergy() {
+        List<Animal> allAnimals = this.getAllAnimals();
+
+        return allAnimals.stream()
+                .mapToInt(Animal::getEnergy)
+                .average() // Compute the average directly
+                .orElse(0.0); // Return 0.0 if the stream is empty
+    }
+
+    protected double getAverageLife() {
+        return deadAnimalsList.isEmpty() ? 0.00 : deadAnimalsList.stream().mapToInt(Animal::getAge).average().orElse(0.0) / deadAnimalsList.size();
+    }
+
+    protected double getAverageAliveAnimalsChildrenCount() {
+        List<Animal> allAnimals = this.getAllAnimals();
+
+        return allAnimals.isEmpty() ? 0.0 : (double) allAnimals.stream()
+                .map(Animal::getNumberOfChildren)
+                .reduce(Integer::sum)
+                .get() / allAnimals.size();
+    }
+
+    public void setStatistics(Stats stats, int newDay) {
+        stats.setStats(this.getNumberOfAnimals(),
+                this.getNumberOfPlants(),
+                this.getNumberOfFreeFields(),
+                newDay,
+                this.getAverageAliveAnimalsEnergy(),
+                this.getAverageLife(),
+                this.getAverageAliveAnimalsChildrenCount(),
+                this.getMostPopularGenotype());
     }
 
     public void animalEat(Animal animal, int plantEnergy) {
         if (plantMap.containsKey(animal.getPosition())) {
-            animal.setEnergy(animal.getEnergy() + plantEnergy);
             plantMap.remove(animal.getPosition());
+            animal.eatPlant(plantEnergy); // update plant eaten and animal energy
             eatPlant(animal.getPosition()); // handles adding cord for generating plants
         }
     }
 
     public void animalBreed(Animal animal, int minimumNumOfMutations, int maximumNumOfMutations, boolean mutationType) {
         Random random = new Random();
-        if (animalMap.containsKey(animal.getPosition()) && animalMap.get(animal.getPosition()).size() == 1) {
+        if (animalMap.containsKey(animal.getPosition()) && animalMap.get(animal.getPosition()).size() == 2) {
 
-            Optional<Animal> firstAnimal = Optional.ofNullable(animalMap.get(animal.getPosition())) // nw też do stestowania na pewno
+            Optional<Animal> firstAnimal = Optional.ofNullable(animalMap.get(animal.getPosition()))
                     .filter(list -> !list.isEmpty())
                     .map(List::getFirst);
-            if (firstAnimal.isPresent()) {
+            if (firstAnimal.isPresent() && breeding.canBreed(animal) && breeding.canBreed(firstAnimal.get())) {
                 Animal child = breeding.breed(firstAnimal.get(), animal);
+                List<Integer> childGenome = child.getGenome();
+                int numOfMutations = random.nextInt(maximumNumOfMutations) + minimumNumOfMutations;
                 if (mutationType) {
-                    for (int i = 0; i < random.nextInt(maximumNumOfMutations) + minimumNumOfMutations; i++) {
-                        mutations.mutateRandomGenes(child.getGenome());
+                    for (int i = 0; i < numOfMutations; i++) {
+                        mutations.mutateRandomGenes(childGenome);
                     }
                 } else {
-                    for (int i = 0; i < random.nextInt(maximumNumOfMutations) + minimumNumOfMutations; i++) {
-                        mutations.mutateRandomGenes(child.getGenome());
+                    for (int i = 0; i < numOfMutations; i++) {
+                        mutations.mutateRandomGenes(childGenome);
                     }
                 }
+                child.setGenome(childGenome);
                 children.add(child);
             }
 
@@ -96,8 +183,18 @@ public abstract class AbstractWorldMap {
     }
 
 
-    protected void placeAnimal(Animal animal) {
+    public void placeAnimalonMap(Animal animal) {
         animalMap.computeIfAbsent(animal.getPosition(), k -> new ArrayList<>()).add(animal); // do stestowania bo nie wierzę że to działa
+    }
+
+
+    public boolean isOccupied(Vector2d position) {
+        return animalMap.containsKey(position);
+    }
+
+    public WorldElement objectAt(Vector2d position) {
+        if (animalMap.get(position) != null) return animalMap.get(position).getFirst();
+        return null;
     }
 
     protected boolean inBounds(Vector2d pos) {
@@ -118,8 +215,12 @@ public abstract class AbstractWorldMap {
         return cord.getX() > MAX_COORD.getX();
     }
 
+    public void setAnimalList(List<Animal> animalList) {
+        this.animalList = animalList;
+    }
+
     // handle animal move on the map
-    protected void move(Animal animal) {
+    public void moveBorderCondition(Animal animal) {
 
         Vector2d CordAfterMove = animal.calculateMove();
 
@@ -134,7 +235,10 @@ public abstract class AbstractWorldMap {
         } else if (exitOnRight(CordAfterMove)) {
             CordAfterMove.setX(MIN_COORD.getX());
         }
+        animalMap.remove(animal.getPosition()); //susy baka nie wiem
         animal.move(CordAfterMove);
+        placeAnimalonMap(animal); // susy baka
+
     }
 
     /// Move
@@ -144,7 +248,7 @@ public abstract class AbstractWorldMap {
     /// breed
     public void animalDay(int plantEnergy, int minimumNumOfMutations, int maximumNumOfMutations, boolean mutationType) { // ta logika jest troche upośledzona dlaczego nie dodaje od razu przy ruchu trawy ale huj nie ruszam już przy testach się zobaczy czy działa tak jak miało
 
-        animalList.forEach(this::move); // move all animals
+        animalList.forEach(this::moveBorderCondition); // move all animals
 
         animalList.forEach(animal -> animalEat(animal, plantEnergy));
 
@@ -152,7 +256,7 @@ public abstract class AbstractWorldMap {
 
         animalList.addAll(children); // add all children to animals
 
-        animalList.forEach(this::placeAnimal);
+//        animalList.forEach(this::placeAnimal);
 
         children.clear(); // clearing child list
 
@@ -161,14 +265,17 @@ public abstract class AbstractWorldMap {
 
     public void deleteDeadAnimals() {
         int N = animalList.size();
-        for (int i = N - 1; i < N; i++) {
-            if (animalList.get(i).getEnergy() <= 0) {
+        for (int i = N - 1; i >= 0; i--) {
+            Animal animal = animalList.get(i);
+            if (animal.isDead()) {
+               animalMap.remove(animal.getPosition());
                 animalList.remove(i);
-            } else {
-                return;
+                deadAnimalsList.add(animal);
             }
         }
+
     }
+
 
     public void createStartingAnimals(int numberOfAnimals, int startingEnergy, int genomeLength) {
         RandomPositionGenerator randGenerator = new RandomPositionGenerator(MAX_COORD.getX(), MAX_COORD.getY(), numberOfAnimals);

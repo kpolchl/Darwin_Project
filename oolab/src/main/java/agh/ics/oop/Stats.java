@@ -35,7 +35,7 @@ public class Stats {
     private int animalCount = 0;
     private int plantCount = 0;
     private int freeSpaceCount = 0;
-    private List<List<Integer>> mostPopularGenotypes = new ArrayList<>();
+    private List<Integer> mostPopularGenotype = new ArrayList<>();
     private double avgLivingEnergy = 0.0;
     private double avgLifespan = 0.0;
     private double avgChildren = 0.0;
@@ -54,8 +54,8 @@ public class Stats {
         return freeSpaceCount;
     }
 
-    public List<List<Integer>> getMostPopularGenotypes() {
-        return mostPopularGenotypes;
+    public List<Integer> getMostPopularGenotype() {
+        return mostPopularGenotype;
     }
 
     public double getAvgLivingEnergy() {
@@ -74,14 +74,15 @@ public class Stats {
         return dayCount;
     }
 
-    public void setStats(int animalCount, int plantCount, int freeSpaceCount, int dayCount, double avgLivingEnergy, double avgLifespan, double avgChildren, List<List<Integer>> mostPopularGenotypes) {
+    public void setStats(int animalCount, int plantCount, int freeSpaceCount, int dayCount, double avgLivingEnergy, double avgLifespan, double avgChildren, List<Integer> mostPopularGenotypes) {
         this.animalCount = animalCount;
         this.plantCount = plantCount;
         this.freeSpaceCount = freeSpaceCount;
-        this.dayCount = dayCount;
+        this.mostPopularGenotype = mostPopularGenotypes;
         this.avgLivingEnergy = avgLivingEnergy;
         this.avgLifespan = avgLifespan;
         this.avgChildren = avgChildren;
-        this.mostPopularGenotypes = mostPopularGenotypes;
+        this.dayCount = dayCount;
+
     }
 }
