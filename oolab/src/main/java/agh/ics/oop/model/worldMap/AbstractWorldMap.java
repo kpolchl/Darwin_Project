@@ -125,7 +125,7 @@ public abstract class AbstractWorldMap {
 
 
     protected double getAverageAliveAnimalsEnergy() {
-        List<Animal> allAnimals = this.getAllAnimals();
+        List<Animal> allAnimals = this.animalList;
 
         return allAnimals.stream()
                 .mapToInt(Animal::getEnergy)
@@ -135,13 +135,8 @@ public abstract class AbstractWorldMap {
 
     protected double getAverageLife() {
         if (deadAnimalsList.isEmpty()) {
-            System.out.println("dead animals list is empty");
             return 0.00; // Return 0.00 if the list is empty
         }
-        System.out.println(deadAnimalsList.stream()
-                .mapToInt(Animal::getAge) // Extract ages of dead animals
-                .average() // Calculate the average
-                .orElse(0.0));
         return deadAnimalsList.stream()
                 .mapToInt(Animal::getAge) // Extract ages of dead animals
                 .average() // Calculate the average
@@ -149,12 +144,12 @@ public abstract class AbstractWorldMap {
     }
 
     protected double getAverageAliveAnimalsChildrenCount() {
-        List<Animal> allAnimals = this.getAllAnimals();
+        List<Animal> aliveAnimals = this.animalList;
 
-        return allAnimals.isEmpty() ? 0.0 : (double) allAnimals.stream()
+        return aliveAnimals.isEmpty() ? 0.0 : (double) aliveAnimals.stream()
                 .map(Animal::getNumberOfChildren)
                 .reduce(Integer::sum)
-                .get() / allAnimals.size();
+                .get() / aliveAnimals.size();
     }
 
     public void setStatistics(Stats stats, int newDay) {
