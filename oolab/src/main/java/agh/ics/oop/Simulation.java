@@ -1,60 +1,65 @@
 package agh.ics.oop;
 
+import agh.ics.oop.controller.SimulationController;
 import agh.ics.oop.model.worldMap.AbstractWorldMap;
 import agh.ics.oop.model.worldMap.CrawlingJungleWorld;
 import agh.ics.oop.model.worldMap.EquatorMap;
 import agh.ics.oop.records.WorldConfiguration;
+import javafx.application.Platform;
 
-public class Simulation {
-    private  AbstractWorldMap worldMap;
-    private  WorldConfiguration worldConfiguration;
+public class Simulation implements Runnable {
+    private AbstractWorldMap worldMap;
+    private WorldConfiguration worldConfiguration;
     private boolean running = true;
     private int dayCount = 0;
     private Stats statistics = new Stats();
+    private SimulationController controller;
 
-    public Simulation(WorldConfiguration worldConfiguration) {
+    public Simulation(WorldConfiguration worldConfiguration, SimulationController controller) {
         this.worldConfiguration = worldConfiguration;
-        //map size, energy partition , breedingEnergyLoss
+        this.controller = controller;
         this.worldMap = worldConfiguration.mapType() ?
                 new EquatorMap(worldConfiguration.maxVector(), worldConfiguration.animalEnergyPartition(), worldConfiguration.animalEnergyToReproduce()) :
                 new CrawlingJungleWorld(worldConfiguration.maxVector(), worldConfiguration.animalEnergyPartition(), worldConfiguration.animalEnergyToReproduce());
 
-        // starting animal numbers
-        worldMap.createStartingAnimals(worldConfiguration.animalStartingNumber() , worldConfiguration.animalStartingEnergy() , worldConfiguration.animalGenomeLength());
-        //starting plants
+        worldMap.createStartingAnimals(worldConfiguration.animalStartingNumber(), worldConfiguration.animalStartingEnergy(), worldConfiguration.animalGenomeLength());
         worldMap.plantGrow(worldConfiguration.plantStartingNumber());
-        System.out.println("Simulation started");
-
+        worldMap.addObserver(controller);
     }
 
-
-
-
+    @Override
     public void run() {
         while (running) {
-            System.out.println("simulation day"+dayCount);
-            worldMap.deleteDeadAnimals();
-            // plantEnergy , mutationMin , mutationMax , mutationType
-            worldMap.animalDay(worldConfiguration.plantEnergy(), worldConfiguration.animalMutationMinimum(), worldConfiguration.animalMutationMaximum(), worldConfiguration.mutationType());
-
-            // dailyPlant grow
+            worldMap.deleteDeadAnimals(dayCount);
+            worldMap.animalDay(worldConfiguration.plantEnergy(),
+                    worldConfiguration.animalMutationMinimum(),
+                    worldConfiguration.animalMutationMaximum(),
+                    worldConfiguration.mutationType());
             worldMap.plantGrow(worldConfiguration.plantDaily());
             dayCount++;
             worldMap.setStatistics(statistics, dayCount);
+
+            worldMap.mapChanged(statistics);
+//            System.out.println(worldMap.getDeadAnimalsList());
+
+
             try {
-                worldMap.mapChanged(statistics);
                 Thread.sleep(200);
             } catch (InterruptedException e) {
-                System.out.println(e.getMessage());
-
+                Thread.currentThread().interrupt();
+                break;
             }
         }
     }
+    public void start(){
+        this.running = true;
+    }
+
+    public void stop() {
+        this.running = false;
+    }
+
+    public AbstractWorldMap getWorldMap() {
+        return worldMap;
+    }
 }
-
-
-//    public void stop() {
-//        running = false;
-//    }
-
-

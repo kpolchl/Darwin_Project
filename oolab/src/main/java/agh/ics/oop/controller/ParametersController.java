@@ -2,13 +2,13 @@ package agh.ics.oop.controller;
 
 import agh.ics.oop.model.utils.Vector2d;
 import agh.ics.oop.records.WorldConfiguration;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 public class ParametersController {
 
-    public Button startSimulationButton;
     @FXML
     private TextField energyPartition;
     @FXML
@@ -67,9 +67,12 @@ public class ParametersController {
                 throw new IllegalArgumentException("All numeric values must be positive.");
             }
 
+            // Create a Vector2d for the map dimensions
+            Vector2d maxVector = new Vector2d(mapWidthValue, mapHeightValue);
+
             // Create and return a new WorldConfiguration object
             return new WorldConfiguration(
-                    new Vector2d(mapWidthValue, mapHeightValue),
+                    maxVector,
                     plantStartingNumberValue,
                     dailyPlantGrowthValue,
                     plantEnergyValue,
@@ -88,7 +91,20 @@ public class ParametersController {
         }
     }
 
-    private void startSimulation() {
-        SimulationController.openSimulationWindow();
+    public void onStartSimulation(ActionEvent actionEvent) {
+        try {
+            // Get the configuration from the form
+            WorldConfiguration worldConfiguration = getWorldConfiguration();
+
+            // Open the simulation window and pass the configuration
+            SimulationController.openNewSimulation(worldConfiguration);
+        } catch (IllegalArgumentException e) {
+            // Show an error message if validation fails
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Input Error");
+            alert.setHeaderText("Invalid Input");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
     }
 }

@@ -86,6 +86,10 @@ public class Animal implements WorldElement {
         return genome;
     }
 
+    public void addChild(Animal child) {
+        this.children.add(child);
+    }
+
     public void setDirection(MapDirection direction) {
         this.direction = direction;
     }
@@ -99,7 +103,7 @@ public class Animal implements WorldElement {
         this.energy += plantEnergy;
     }
 
-    private void ageUpAnimal(){
+    public void ageUpAnimal(){
         this.age++;
     }
 
@@ -112,11 +116,7 @@ public class Animal implements WorldElement {
     }
 
     public String toString(){
-        return this.direction.toString() +
-                this.genome.toString() +
-                this.energy  +
-                this.coordinate.toString() +
-                this.indexActiveGene;
+        return this.direction.toString();
     }
 
     /// poruszanie się

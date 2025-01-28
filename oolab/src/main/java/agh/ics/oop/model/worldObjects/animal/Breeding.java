@@ -38,7 +38,12 @@ public class Breeding {
 
             List<Integer> newGenome = genomGenerator.generateGenomeByMating(father.getGenome() ,mother.getGenome() ,father.getEnergy() ,mother.getEnergy());
 
-            return new Animal(father.getPosition(), newEnergy, newGenome);
+            Animal child = new Animal(father.getPosition(), newEnergy, newGenome);
+
+            father.addChild(child);
+            mother.addChild(child);
+
+            return child;
         }
         throw new BreedignError(father, mother);
     }

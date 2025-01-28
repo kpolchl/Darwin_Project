@@ -78,7 +78,7 @@
 
     <bottom>
         <HBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
-<!--            <Button text="Start Simulation" fx:id="startSimulationButton" onAction="#onStartSimulation"/>-->
+            <Button text="Start Simulation" fx:id="startSimulationButton" onAction="#onStartSimulation"/>
         </HBox>
     </bottom>
 </BorderPane>

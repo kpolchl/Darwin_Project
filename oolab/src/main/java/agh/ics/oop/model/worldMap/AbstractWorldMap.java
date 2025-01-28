@@ -46,9 +46,19 @@ public abstract class AbstractWorldMap {
         return animalList;
     }
 
+    public List<Animal> getDeadAnimalsList() {
+        return deadAnimalsList;
+    }
 
     public HashMap<Vector2d, Plant> getPlantMap() {
         return plantMap;
+    }
+
+    public int getWidth() {
+        return MAX_COORD.getX();
+    }
+    public int getHeight() {
+        return MAX_COORD.getY();
     }
 
     public void setDeadAnimalsList(List<Animal> deadAnimalsList) {
@@ -124,7 +134,18 @@ public abstract class AbstractWorldMap {
     }
 
     protected double getAverageLife() {
-        return deadAnimalsList.isEmpty() ? 0.00 : deadAnimalsList.stream().mapToInt(Animal::getAge).average().orElse(0.0) / deadAnimalsList.size();
+        if (deadAnimalsList.isEmpty()) {
+            System.out.println("dead animals list is empty");
+            return 0.00; // Return 0.00 if the list is empty
+        }
+        System.out.println(deadAnimalsList.stream()
+                .mapToInt(Animal::getAge) // Extract ages of dead animals
+                .average() // Calculate the average
+                .orElse(0.0));
+        return deadAnimalsList.stream()
+                .mapToInt(Animal::getAge) // Extract ages of dead animals
+                .average() // Calculate the average
+                .orElse(0.0); // Return 0.0 if the stream is empty (should not happen due to the isEmpty check)
     }
 
     protected double getAverageAliveAnimalsChildrenCount() {
@@ -193,7 +214,10 @@ public abstract class AbstractWorldMap {
     }
 
     public WorldElement objectAt(Vector2d position) {
-        if (animalMap.get(position) != null) return animalMap.get(position).getFirst();
+        if (animalMap.get(position) != null)
+            return animalMap.get(position).getFirst();
+        else if(plantMap.get(position) != null)
+            return plantMap.get(position);
         return null;
     }
 
@@ -254,26 +278,29 @@ public abstract class AbstractWorldMap {
 
         animalList.forEach(animal -> animalBreed(animal, minimumNumOfMutations, maximumNumOfMutations, mutationType)); // breed
 
-        animalList.addAll(children); // add all children to animals
+        ageUpAnimals();
 
-//        animalList.forEach(this::placeAnimal);
+        animalList.addAll(children); // add all children to animals
 
         children.clear(); // clearing child list
 
         animalList.sort(Comparator.comparingInt(Animal::getEnergy).reversed()); // sorting all animals by energy
     }
 
-    public void deleteDeadAnimals() {
+    public void deleteDeadAnimals(int deathDay) {
         int N = animalList.size();
         for (int i = N - 1; i >= 0; i--) {
             Animal animal = animalList.get(i);
+            animal.setDayOfDeath(deathDay);
             if (animal.isDead()) {
                animalMap.remove(animal.getPosition());
                 animalList.remove(i);
                 deadAnimalsList.add(animal);
             }
         }
-
+    }
+    public void ageUpAnimals(){
+        animalList.forEach(Animal::ageUpAnimal);
     }
 
 
