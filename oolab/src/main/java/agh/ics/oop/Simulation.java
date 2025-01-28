@@ -30,7 +30,7 @@ public class Simulation implements Runnable {
     @Override
     public void run() {
         while (running) {
-            worldMap.deleteDeadAnimals();
+            worldMap.deleteDeadAnimals(dayCount);
             worldMap.animalDay(worldConfiguration.plantEnergy(),
                     worldConfiguration.animalMutationMinimum(),
                     worldConfiguration.animalMutationMaximum(),
@@ -39,8 +39,9 @@ public class Simulation implements Runnable {
             dayCount++;
             worldMap.setStatistics(statistics, dayCount);
 
-            // Update UI on JavaFX Application Thread
-            Platform.runLater(() -> controller.updateMap(worldMap));
+            worldMap.mapChanged(statistics);
+//            System.out.println(worldMap.getDeadAnimalsList());
+
 
             try {
                 Thread.sleep(200);
@@ -50,9 +51,12 @@ public class Simulation implements Runnable {
             }
         }
     }
+    public void start(){
+        this.running = true;
+    }
 
     public void stop() {
-        running = false;
+        this.running = false;
     }
 
     public AbstractWorldMap getWorldMap() {

@@ -12,33 +12,30 @@
             fx:controller="agh.ics.oop.controller.SimulationController"
             minHeight="600.0" minWidth="900.0">
 
-    <!-- Centralna mapa -->
     <center>
         <GridPane fx:id="mapGrid" gridLinesVisible="true" alignment="CENTER"
                   style="-fx-border-color: black; -fx-padding: 10;"/>
     </center>
 
-    <!-- Statystyki -->
     <right>
         <VBox spacing="10" style="-fx-padding: 10;">
             <Label text="Simulation Statistics" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
             <Label fx:id="animalCountLabel" text="Animals: 0"/>
-            <Label fx:id="plantCountLabel" text="Plant: 0"/>
-            <Label fx:id="freeSpaceCountLabel" text="Free spaces: 0"/>
-            <Label fx:id="averageLivingEnergyLabel" text="Average living energy:"/>
-            <Label fx:id="averageLifeSpanLabel" text="Average life span:"/>
-            <Label fx:id="averageChildrenCountLabel" text="Average children count:"/>
-            <Label fx:id="trackedAnimalLabel" text="Tracked Animal: None"/>
-
+            <Label fx:id="plantCountLabel" text="Plants: 0"/>
+            <Label fx:id="freeSpaceCountLabel" text="Free Fields: 0"/>
+            <Label fx:id="averageLivingEnergyLabel" text="Average Energy: 0.00"/>
+            <Label fx:id="averageLifeSpanLabel" text="Average Lifespan: 0.00"/>
+            <Label fx:id="averageChildrenCountLabel" text="Average Children: 0.00"/>
+            <Label fx:id="trackedAnimalLabel" text="No Animal Tracked"/>
         </VBox>
     </right>
 
-    <!-- Przyciski kontrolne -->
     <bottom>
         <HBox spacing="10" alignment="CENTER" style="-fx-padding: 10;">
-<!--            <Button text="Start" onAction="#startSimulation" style="-fx-background-color: #4caf50; -fx-text-fill: white;"/>-->
-<!--            <Button text="Stop" onAction="#stopSimulation" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>-->
-<!--            <Button text="Track Animal" onAction="#trackAnimal"/>-->
+            <Button fx:id="startButton" text="Start"
+                    style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+            <Button fx:id="stopButton" text="Stop"
+                    style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
         </HBox>
     </bottom>
 

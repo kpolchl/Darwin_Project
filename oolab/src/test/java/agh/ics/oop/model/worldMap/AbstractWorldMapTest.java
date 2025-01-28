@@ -104,7 +104,7 @@ class AbstractWorldMapTest {
         worldMap.placeAnimalonMap(aliveAnimal);
         worldMap.placeAnimalonMap(deadAnimal);
 
-        worldMap.deleteDeadAnimals();
+        worldMap.deleteDeadAnimals(10);
 
         assertFalse(worldMap.isOccupied(new Vector2d(5, 6)));
         assertTrue(worldMap.isOccupied(new Vector2d(5, 5)));

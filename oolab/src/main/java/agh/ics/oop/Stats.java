@@ -83,6 +83,19 @@ public class Stats {
         this.avgLifespan = avgLifespan;
         this.avgChildren = avgChildren;
         this.dayCount = dayCount;
+    }
 
+    @Override
+    public String toString() {
+        return "Stats{" +
+                "animalCount=" + animalCount +
+                ", plantCount=" + plantCount +
+                ", freeSpaceCount=" + freeSpaceCount +
+                ", mostPopularGenotype=" + mostPopularGenotype +
+                ", avgLivingEnergy=" + avgLivingEnergy +
+                ", avgLifespan=" + avgLifespan +
+                ", avgChildren=" + avgChildren +
+                ", dayCount=" + dayCount +
+                '}';
     }
 }

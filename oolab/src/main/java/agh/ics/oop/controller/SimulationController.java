@@ -13,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -21,6 +22,10 @@ import javafx.stage.Stage;
 
 public class SimulationController implements MapChangeListener {
 
+    @FXML
+    private Button startButton;
+    @FXML
+    private Button stopButton;
     @FXML
     private Label plantCountLabel;
     @FXML
@@ -37,21 +42,64 @@ public class SimulationController implements MapChangeListener {
     private Label animalCountLabel;
     @FXML
     private GridPane mapGrid;
-    @FXML
-    private Label statsLabel;
 
     private Simulation simulation;
     private Thread simulationThread;
     private final int CELL_WIDTH = 30;
     private final int CELL_HEIGHT = 30;
     private WorldConfiguration worldConfiguration;
+    private boolean isRunning = false;
 
     public void initialize(WorldConfiguration config) {
         this.worldConfiguration = config;
         initializeGrid();
+        initializeButtons();
         startSimulation();
     }
+    private void initializeButtons() {
+        // Don't create new buttons, just configure the existing FXML ones
+        stopButton.setOnAction(event -> stopSimulation());
+        startButton.setOnAction(event -> resumeSimulation());
 
+        stopButton.setStyle("-fx-background-color: #f44336; -fx-text-fill: white;");
+        startButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
+    }
+
+    private void startSimulation() {
+        if (!isRunning) {
+            if (simulation == null) {
+                // Create a new simulation only if it doesn't already exist
+                simulation = new Simulation(worldConfiguration, this);
+                simulationThread = new Thread(simulation);
+            }
+            simulationThread.start();
+            isRunning = true;
+            startButton.setDisable(true);
+            stopButton.setDisable(false);
+        }
+    }
+
+    public void stopSimulation() {
+        if (isRunning && simulation != null) {
+            simulation.stop();
+            simulationThread.interrupt();
+            isRunning = false;
+            startButton.setDisable(false);
+            stopButton.setDisable(true);
+        }
+    }
+
+    public void resumeSimulation() {
+        if (!isRunning && simulation != null) {
+            // Resume the existing simulation
+            simulationThread = new Thread(simulation); // Recreate the thread if needed
+            simulationThread.start();
+            isRunning = true;
+            simulation.start();
+            startButton.setDisable(true);
+            stopButton.setDisable(false);
+        }
+    }
     private void initializeGrid() {
         mapGrid.getColumnConstraints().clear();
         mapGrid.getRowConstraints().clear();
@@ -71,20 +119,6 @@ public class SimulationController implements MapChangeListener {
         mapGrid.setGridLinesVisible(true);
     }
 
-    private void startSimulation() {
-        simulation = new Simulation(worldConfiguration, this);
-        simulationThread = new Thread(simulation);
-        simulationThread.start();
-    }
-
-    public void stopSimulation() {
-        if (simulation != null) {
-            simulation.stop();
-        }
-        if (simulationThread != null) {
-            simulationThread.interrupt();
-        }
-    }
 
     public void updateMap(AbstractWorldMap worldMap) {
         clearGrid();
@@ -134,21 +168,31 @@ public class SimulationController implements MapChangeListener {
 
     @Override
     public void mapChanged(AbstractWorldMap worldMap, Stats stats) {
+        if (!isRunning) return;
+
         Platform.runLater(() -> {
             updateMap(worldMap);
             updateStats(stats);
         });
     }
 
-    private void updateStats(Stats stats) {
-        animalCountLabel.setText(String.valueOf(stats.getAnimalCount()));
-        plantCountLabel.setText(String.valueOf(stats.getPlantCount()));
-        freeSpaceCountLabel.setText(String.valueOf(stats.getFreeSpaceCount()));
-        averageLivingEnergyLabel.setText(String.valueOf(stats.getAvgLivingEnergy()));
-        averageLifeSpanLabel.setText(String.valueOf(stats.getAvgLifespan()));
-        averageChildrenCountLabel.setText(String.valueOf(stats.getAvgChildren()));
-        trackedAnimalLabel.setText(String.valueOf(stats.getPlantCount()));
 
+
+    private void updateStats(Stats stats) {
+        // Format numbers to 2 decimal places for floating point values
+        animalCountLabel.setText("Animals: " + stats.getAnimalCount());
+        plantCountLabel.setText("Plants: " + stats.getPlantCount());
+        freeSpaceCountLabel.setText("Free Fields: " + stats.getFreeSpaceCount());
+        averageLivingEnergyLabel.setText(String.format("Average Energy: %.2f", stats.getAvgLivingEnergy()));
+        averageLifeSpanLabel.setText(String.format("Average Lifespan: %.2f", stats.getAvgLifespan()));
+        averageChildrenCountLabel.setText(String.format("Average Children: %.2f", stats.getAvgChildren()));
+
+//        // Update tracked animal info if available
+//        if (stats.getTrackedAnimal() != null) {
+//            trackedAnimalLabel.setText("Tracked Animal: " + stats.getTrackedAnimal().toString());
+//        } else {
+//            trackedAnimalLabel.setText("No Animal Tracked");
+//        }
     }
 
     public static void openNewSimulation(WorldConfiguration config) {
@@ -165,7 +209,11 @@ public class SimulationController implements MapChangeListener {
                 stage.setScene(new Scene(root));
                 stage.show();
 
-                stage.setOnCloseRequest(event -> controller.stopSimulation());
+                // Handle window close
+                stage.setOnCloseRequest(event -> {
+                    controller.stopSimulation();
+                    stage.close();
+                });
             } catch (Exception e) {
                 e.printStackTrace();
             }
