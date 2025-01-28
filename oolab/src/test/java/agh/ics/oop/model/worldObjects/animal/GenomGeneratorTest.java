@@ -26,8 +26,8 @@ class GenomeGeneratorTest {
     @Test
     void testActivateRandomGene() {
         GenomGenerator generator = new GenomGenerator();
-        int activatedGene = generator.activateRandomGene();
-
+        int activatedGene = generator.activateRandomGene(10);
+        System.out.println(activatedGene);
         // Sprawdź czy aktywowany gen jest w zakresie [0, 9]
         assertTrue(activatedGene >= 0 && activatedGene < 10, "Aktywowany gen powinien być w zakresie od 0 do 9.");
     }
