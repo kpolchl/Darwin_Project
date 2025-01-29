@@ -1,41 +1,13 @@
-package agh.ics.oop;
-
-//Program ma pozwalać na śledzenie następujących statystyk dla aktualnej sytuacji w symulacji:\
-//
-//
-//
-//
-//
-//
-//
-
-
-//Po zatrzymaniu programu można oznaczyć jednego zwierzaka jako wybranego do śledzenia. Od tego momentu (do zatrzymania śledzenia) UI powinien przekazywać nam informacje o jego statusie i historii:
-
-//jaki ma genom,
-//która jego część jest aktywowana,
-//ile ma energii,
-//ile zjadł roślin,XXX
-//ile posiada dzieci,XXX
-//ile posiada potomków (niekoniecznie będących bezpośrednio dziećmi),XXX
-//ile dni już żyje (jeżeli żyje),
-//którego dnia zmarło (jeżeli żywot już skończyło).
-
-
-//Po zatrzymaniu programu powinno być też możliwe:
-
-//pokazanie, które ze zwierząt mają dominujący (najpopularniejszy) genotyp (np. poprzez wyróżnienie ich wizualnie),
-//pokazanie, które z pól są preferowane przez rośliny (np. poprzez wyróżnienie ich wizualnie).
-
+package agh.ics.oop.model.utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Stats {
+
     private int animalCount = 0;
     private int plantCount = 0;
     private int freeSpaceCount = 0;
-    private List<Integer> mostPopularGenotype = new ArrayList<>();
     private double avgLivingEnergy = 0.0;
     private double avgLifespan = 0.0;
     private double avgChildren = 0.0;
@@ -56,7 +28,6 @@ public class Stats {
         return topThreeGenome;
     }
 
-
     public int getAnimalCount() {
         return animalCount;
     }
@@ -67,10 +38,6 @@ public class Stats {
 
     public int getFreeSpaceCount() {
         return freeSpaceCount;
-    }
-
-    public List<Integer> getMostPopularGenotype() {
-        return mostPopularGenotype;
     }
 
     public double getAvgLivingEnergy() {
@@ -98,23 +65,9 @@ public class Stats {
         this.avgChildren = avgChildren;
         this.dayCount = dayCount;
 
-        // Przypisz trzy najpopularniejsze genotypy
         if (!topGenomes.isEmpty()) this.topOneGenome = topGenomes.get(0);
         if (topGenomes.size() > 1) this.topTwoGenome = topGenomes.get(1);
         if (topGenomes.size() > 2) this.topThreeGenome = topGenomes.get(2);
     }
 
-    @Override
-    public String toString() {
-        return "Stats{" +
-                "animalCount=" + animalCount +
-                ", plantCount=" + plantCount +
-                ", freeSpaceCount=" + freeSpaceCount +
-                ", mostPopularGenotype=" + mostPopularGenotype +
-                ", avgLivingEnergy=" + avgLivingEnergy +
-                ", avgLifespan=" + avgLifespan +
-                ", avgChildren=" + avgChildren +
-                ", dayCount=" + dayCount +
-                '}';
-    }
 }

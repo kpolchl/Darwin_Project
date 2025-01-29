@@ -5,25 +5,26 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
+// used only to populate map with animals on start of the simulation
 public class RandomPositionGenerator implements Iterable<Vector2d> {
     int MaxHeight;
     int MaxWidth;
     int N;
     List<Vector2d> positions;
 
-    public RandomPositionGenerator(int maxHeight, int maxWidth,int N) {
+    public RandomPositionGenerator(int maxHeight, int maxWidth, int N) {
         this.MaxHeight = maxHeight;
         this.MaxWidth = maxWidth;
         this.N = N;
         positions = new ArrayList<>();
         for (int i = 0; i < N; i++) {
             for (int j = i; j < N; j++) {
-                positions.add(new Vector2d(i,j));
+                positions.add(new Vector2d(i, j));
             }
         }
         Collections.shuffle(positions);
     }
+
     @Override
     public Iterator<Vector2d> iterator() {
         return new Iterator<Vector2d>() {
@@ -46,7 +47,6 @@ public class RandomPositionGenerator implements Iterable<Vector2d> {
             }
         };
     }
-
 
 
 }

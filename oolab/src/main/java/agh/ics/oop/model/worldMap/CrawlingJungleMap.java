@@ -7,21 +7,29 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-public class CrawlingJungleWorld extends AbstractWorldMap {
+public class CrawlingJungleMap extends AbstractWorldMap {
 
     private final Set<Vector2d> preferredPositions;
     private final Set<Vector2d> nonPreferredPositions;
 
-    public CrawlingJungleWorld(Vector2d MAX_COORD, int breedingPartition, int breedingEnergy) {
-        super(MAX_COORD, breedingPartition, breedingEnergy);
+    public CrawlingJungleMap(Vector2d MaxCord, int breedingPartition, int breedingEnergy) {
+        super(MaxCord, breedingPartition, breedingEnergy);
         this.preferredPositions = new HashSet<>();
         this.nonPreferredPositions = new HashSet<>();
 
-        for (int i = 0; i < MAX_COORD.getX()+1; i++) {
-            for (int j = 0; j < MAX_COORD.getY()+1; j++) {
+        for (int i = 0; i < MaxCord.getX()+1; i++) {
+            for (int j = 0; j < MaxCord.getY()+1; j++) {
                 nonPreferredPositions.add(new Vector2d(i, j));
             }
         }
+    }
+
+    public Set<Vector2d> getPreferedPositions(){
+        return preferredPositions;
+    }
+
+    private boolean isValidPosition(Vector2d position) {
+        return position.precedes(MaxCord) && position.follows(MinCord) && plantMap.get(position) == null;
     }
 
     private void addPreferredPositions(Vector2d position) {
@@ -49,10 +57,6 @@ public class CrawlingJungleWorld extends AbstractWorldMap {
                 }
             }
         }
-    }
-
-    private boolean isValidPosition(Vector2d position) {
-        return position.precedes(MAX_COORD) && position.follows(MIN_COORD) && plantMap.get(position) == null;
     }
 
     @Override

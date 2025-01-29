@@ -1,11 +1,12 @@
 package agh.ics.oop.controller;
 
 import agh.ics.oop.Simulation;
-import agh.ics.oop.Stats;
+import agh.ics.oop.model.utils.Stats;
 import agh.ics.oop.model.observators.MapChangeListener;
 import agh.ics.oop.model.utils.Vector2d;
 import agh.ics.oop.model.worldMap.AbstractWorldMap;
 import agh.ics.oop.model.worldObjects.WorldElement;
+import agh.ics.oop.model.worldObjects.animal.Animal;
 import agh.ics.oop.records.WorldConfiguration;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -30,7 +31,6 @@ public class SimulationController implements MapChangeListener {
     private Label topThreeGenomeLabel;
     @FXML
     private Label dayCount;
-
     @FXML
     private Button startButton;
     @FXML
@@ -46,18 +46,79 @@ public class SimulationController implements MapChangeListener {
     @FXML
     private Label averageChildrenCountLabel;
     @FXML
-    private Label trackedAnimalLabel;
-    @FXML
     private Label animalCountLabel;
     @FXML
     private GridPane mapGrid;
+    @FXML
+    private Label trackedAnimalGenome;
+    @FXML
+    private Label trackedAnimalActiveGene;
+    @FXML
+    private Label trackedAnimalEnergy;
+    @FXML
+    private Label trackedAnimalPlantsEaten;
+    @FXML
+    private Label trackedAnimalChildren;
+    @FXML
+    private Label trackedAnimalDescendants;
+    @FXML
+    private Label trackedAnimalAge;
+    @FXML
+    private Button stopTrackingButton;
 
-    private Simulation simulation;
-    private Thread simulationThread;
+
     private final int CELL_WIDTH = 30;
     private final int CELL_HEIGHT = 30;
+
+    private Animal trackedAnimal;
+    private Simulation simulation;
+    private Thread simulationThread;
     private WorldConfiguration worldConfiguration;
     private boolean isRunning = false;
+
+    public void startTracking(Animal animal) {
+        if (!isRunning) {
+            trackedAnimal = animal;
+            stopTrackingButton.setDisable(false);
+            updateTrackingDisplay();
+        }
+    }
+
+    public void stopTracking() {
+        clearTrackingDisplay();
+        trackedAnimal = null;
+        stopTrackingButton.setDisable(true);
+    }
+
+    private void updateTrackingDisplay() {
+        if (trackedAnimal == null) {
+            clearTrackingDisplay();
+            return;
+        }
+
+        trackedAnimalGenome.setText("Genome: " + trackedAnimal.getGenome());
+        trackedAnimalActiveGene.setText("Active Gene: " + trackedAnimal.getActiveGene());
+        trackedAnimalEnergy.setText("Energy: " + trackedAnimal.getEnergy());
+        trackedAnimalPlantsEaten.setText("Plants Eaten: " + trackedAnimal.getPlantEaten());
+        trackedAnimalChildren.setText("Children: " + trackedAnimal.getNumberOfChildren());
+        trackedAnimalDescendants.setText("Descendants: " + trackedAnimal.getNumberOfDescendants());
+
+        if (!trackedAnimal.isDead()) {
+            trackedAnimalAge.setText("Age: " + trackedAnimal.getAge() + " days");
+        } else {
+            trackedAnimalAge.setText("Died on day: " + trackedAnimal.getDayOfDeath());
+        }
+    }
+
+    private void clearTrackingDisplay() {
+        trackedAnimalGenome.setText("No animal tracked");
+        trackedAnimalActiveGene.setText("");
+        trackedAnimalEnergy.setText("");
+        trackedAnimalPlantsEaten.setText("");
+        trackedAnimalChildren.setText("");
+        trackedAnimalDescendants.setText("");
+        trackedAnimalAge.setText("");
+    }
 
     public void initialize(WorldConfiguration config) {
         this.worldConfiguration = config;
@@ -67,18 +128,19 @@ public class SimulationController implements MapChangeListener {
     }
 
     private void initializeButtons() {
-        // Don't create new buttons, just configure the existing FXML ones
         stopButton.setOnAction(event -> stopSimulation());
         startButton.setOnAction(event -> resumeSimulation());
 
         stopButton.setStyle("-fx-background-color: #f44336; -fx-text-fill: white;");
         startButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
+
+        stopTrackingButton.setOnAction(event -> stopTracking());
+        stopTrackingButton.setDisable(true);
     }
 
     private void startSimulation() {
         if (!isRunning) {
             if (simulation == null) {
-                // Create a new simulation only if it doesn't already exist
                 simulation = new Simulation(worldConfiguration, this);
                 simulationThread = new Thread(simulation);
             }
@@ -101,8 +163,7 @@ public class SimulationController implements MapChangeListener {
 
     public void resumeSimulation() {
         if (!isRunning && simulation != null) {
-            // Resume the existing simulation
-            simulationThread = new Thread(simulation); // Recreate the thread if needed
+            simulationThread = new Thread(simulation);
             simulationThread.start();
             isRunning = true;
             simulation.start();
@@ -115,13 +176,11 @@ public class SimulationController implements MapChangeListener {
         mapGrid.getColumnConstraints().clear();
         mapGrid.getRowConstraints().clear();
 
-        // Add column constraints (including header column)
         for (int i = 0; i <= worldConfiguration.maxVector().getX() + 1; i++) {
             ColumnConstraints column = new ColumnConstraints(CELL_WIDTH);
             mapGrid.getColumnConstraints().add(column);
         }
 
-        // Add row constraints (including header row)
         for (int i = 0; i <= worldConfiguration.maxVector().getY() + 1; i++) {
             RowConstraints row = new RowConstraints(CELL_HEIGHT);
             mapGrid.getRowConstraints().add(row);
@@ -129,7 +188,6 @@ public class SimulationController implements MapChangeListener {
 
         mapGrid.setGridLinesVisible(true);
     }
-
 
     public void updateMap(AbstractWorldMap worldMap) {
         clearGrid();
@@ -144,19 +202,16 @@ public class SimulationController implements MapChangeListener {
     }
 
     private void drawGrid() {
-        // Add corner label (y/x)
         Label cornerLabel = new Label("y/x");
         mapGrid.add(cornerLabel, 0, 0);
         GridPane.setHalignment(cornerLabel, HPos.CENTER);
 
-        // Add column headers (x coordinates)
         for (int x = 0; x <= worldConfiguration.maxVector().getX(); x++) {
             Label label = new Label(Integer.toString(x));
             mapGrid.add(label, x + 1, 0);
             GridPane.setHalignment(label, HPos.CENTER);
         }
 
-        // Add row headers (y coordinates)
         for (int y = 0; y <= worldConfiguration.maxVector().getY(); y++) {
             Label label = new Label(Integer.toString(worldConfiguration.maxVector().getY() - y));
             mapGrid.add(label, 0, y + 1);
@@ -165,14 +220,28 @@ public class SimulationController implements MapChangeListener {
     }
 
     private void addElements(AbstractWorldMap worldMap) {
-        for (int x = 0; x <= worldConfiguration.maxVector().getX(); x++) {
-            for (int y = 0; y <= worldConfiguration.maxVector().getY(); y++) {
-                Vector2d pos = new Vector2d(x, y);
-                WorldElement element = worldMap.objectAt(pos);
+        synchronized (worldMap) {
+            for (int x = 0; x <= worldConfiguration.maxVector().getX(); x++) {
+                for (int y = 0; y <= worldConfiguration.maxVector().getY(); y++) {
+                    Vector2d pos = new Vector2d(x, y);
+                    WorldElement element = worldMap.objectAt(pos);
+                    Label label = new Label(element != null ? element.toString() : " ");
 
-                Label label = new Label(element != null ? element.toString() : " ");
-                mapGrid.add(label, x + 1, worldConfiguration.maxVector().getY() - y + 1);
-                GridPane.setHalignment(label, HPos.CENTER);
+                    if (element instanceof Animal) {
+                        label.setOnMouseClicked(event -> {
+                            if (!isRunning) {
+                                startTracking((Animal) element);
+                            }
+                        });
+
+                        if (trackedAnimal != null && element == trackedAnimal) {
+                            label.setStyle("-fx-background-color: yellow;");
+                        }
+                    }
+
+                    mapGrid.add(label, x + 1, worldConfiguration.maxVector().getY() - y + 1);
+                    GridPane.setHalignment(label, HPos.CENTER);
+                }
             }
         }
     }
@@ -184,13 +253,11 @@ public class SimulationController implements MapChangeListener {
         Platform.runLater(() -> {
             updateMap(worldMap);
             updateStats(stats);
+            updateTrackingDisplay();
         });
     }
 
-
-
     private void updateStats(Stats stats) {
-        // Format numbers to 2 decimal places for floating point values
         dayCount.setText("Day: " + stats.getDayCount());
         animalCountLabel.setText("Animals: " + stats.getAnimalCount());
         plantCountLabel.setText("Plants: " + stats.getPlantCount());
@@ -199,17 +266,9 @@ public class SimulationController implements MapChangeListener {
         averageLifeSpanLabel.setText("Average Lifespan: " + String.format("%.2f", stats.getAvgLifespan()));
         averageChildrenCountLabel.setText("Average Children: " + String.format("%.2f", stats.getAvgChildren()));
 
-        // Aktualizacja genotypów
         topOneGenomeLabel.setText("Top 1 Genome: " + stats.getTopOneGenome());
         topTwoGenomeLabel.setText("Top 2 Genome: " + stats.getTopTwoGenome());
         topThreeGenomeLabel.setText("Top 3 Genome: " + stats.getTopThreeGenome());
-
-//        // Update tracked animal info if available
-//        if (stats.getTrackedAnimal() != null) {
-//            trackedAnimalLabel.setText("Tracked Animal: " + stats.getTrackedAnimal().toString());
-//        } else {
-//            trackedAnimalLabel.setText("No Animal Tracked");
-//        }
     }
 
     public static void openNewSimulation(WorldConfiguration config) {
@@ -222,11 +281,10 @@ public class SimulationController implements MapChangeListener {
                 controller.initialize(config);
 
                 Stage stage = new Stage();
-                stage.setTitle("Simulation " + System.currentTimeMillis());
+                stage.setTitle("Simulation");
                 stage.setScene(new Scene(root));
                 stage.show();
 
-                // Handle window close
                 stage.setOnCloseRequest(event -> {
                     controller.stopSimulation();
                     stage.close();

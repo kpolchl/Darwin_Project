@@ -7,6 +7,7 @@ import java.util.*;
 
 public class EquatorMap extends AbstractWorldMap {
 
+    // 20% of map is equator
     private static final double LOWER_BOUND_RATIO = 0.4; // 2/5
     private static final double UPPER_BOUND_RATIO = 0.6; // 3/5
 
@@ -22,8 +23,8 @@ public class EquatorMap extends AbstractWorldMap {
         int lowerBound = (int) (MAX_COORD.getY() * LOWER_BOUND_RATIO);
         int upperBound = (int) (MAX_COORD.getY() * UPPER_BOUND_RATIO);
 
-        for (int i = 0; i < MAX_COORD.getY()+1; i++) {
-            for (int j = 0; j < MAX_COORD.getX()+1; j++) {
+        for (int i = 0; i < MAX_COORD.getY() + 1; i++) {
+            for (int j = 0; j < MAX_COORD.getX() + 1; j++) {
                 Vector2d pos = new Vector2d(j, i);
                 if (i >= lowerBound && i < upperBound) {
                     preferredPositions.add(pos);
@@ -33,6 +34,11 @@ public class EquatorMap extends AbstractWorldMap {
             }
         }
     }
+
+    public Set<Vector2d> getPreferedPositions() {
+        return preferredPositions;
+    }
+
     public Set<Vector2d> getPreferredPositions() {
         return preferredPositions;
     }
@@ -67,8 +73,8 @@ public class EquatorMap extends AbstractWorldMap {
     }
 
     protected boolean isPreferredPosition(Vector2d pos) {
-        int lowerBound = (int) (MAX_COORD.getY() * LOWER_BOUND_RATIO);
-        int upperBound = (int) (MAX_COORD.getY() * UPPER_BOUND_RATIO);
+        int lowerBound = (int) (MaxCord.getY() * LOWER_BOUND_RATIO);
+        int upperBound = (int) (MaxCord.getY() * UPPER_BOUND_RATIO);
         return pos.getY() >= lowerBound && pos.getY() < upperBound;
     }
 

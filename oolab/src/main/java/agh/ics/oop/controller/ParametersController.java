@@ -47,6 +47,7 @@ public class ParametersController {
     private TextField genomeLength;
 
     private static final String DEFAULT_DIRECTORY = "simulation_parameters";
+    private Stage stage;
 
     @FXML
     private WorldConfiguration getWorldConfiguration() throws IllegalArgumentException {
@@ -74,9 +75,11 @@ public class ParametersController {
             // Validate input values
             if (mapWidthValue <= 0 || mapHeightValue <= 0 || plantStartingNumberValue < 0 || dailyPlantGrowthValue < 0 ||
                     plantEnergyValue <= 0 || animalStartingEnergyValue <= 0 || energyPartitionValue <= 0 ||
-                    initialAnimalsValue <= 0 || reproductionEnergyValue <= 0 || minMutationsValue < 0 ||
-                    maxMutationsValue < 0 || genomeLengthValue <= 0) {
+                    initialAnimalsValue <= 0 || reproductionEnergyValue <= 0 || maxMutationsValue < 0 || genomeLengthValue <= 0 || minMutationsValue < 0) {
                 throw new IllegalArgumentException("All numeric values must be positive.");
+            }
+            if (minMutationsValue > maxMutationsValue) {
+                throw new IllegalArgumentException("Minimum mutations value must be less than maximum mutations value.");
             }
 
             // Create a Vector2d for the map dimensions
@@ -121,12 +124,6 @@ public class ParametersController {
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
-    }
-    private Stage stage; // Reference to the current stage
-
-    // Setter for the stage (to be called from the main application)
-    public void setStage(Stage stage) {
-        this.stage = stage;
     }
 
     @FXML
@@ -208,6 +205,7 @@ public class ParametersController {
             }
         }
     }
+
     private void showErrorDialog(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");

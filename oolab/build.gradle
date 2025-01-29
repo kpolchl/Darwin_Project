@@ -4,7 +4,7 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.0.13'
 }
 application {
-  getMainClass().set('agh.ics.oop.World')
+  getMainClass().set('agh.ics.oop.Main')
 }
 java {
     toolchain {

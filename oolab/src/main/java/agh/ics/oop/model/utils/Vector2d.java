@@ -7,8 +7,8 @@ import static java.lang.Math.min;
 
 public class Vector2d {
 
-    private  int x;
-    private  int y;
+    private int x;
+    private int y;
 
     public Vector2d(int x, int y) {
         this.x = x;
@@ -26,6 +26,7 @@ public class Vector2d {
     public void setX(int x) {
         this.x = x;
     }
+
     public void setY(int y) {
         this.y = y;
     }
@@ -34,17 +35,15 @@ public class Vector2d {
         return "(" + this.x + "," + this.y + ")";
     }
 
-    public boolean precedes(Vector2d other)
-    {
-        if(other == null){
-        return false;
-    }
+    public boolean precedes(Vector2d other) {
+        if (other == null) {
+            return false;
+        }
         return this.x <= other.getX() && this.y <= other.getY();
     }
 
-    public boolean follows(Vector2d other)
-    {
-        if(other == null){
+    public boolean follows(Vector2d other) {
+        if (other == null) {
             return false;
         }
         return this.x >= other.x && this.y >= other.y;
@@ -59,13 +58,15 @@ public class Vector2d {
     }
 
     public Vector2d upperRight(Vector2d other) {
-        return new Vector2d( max(this.x, other.x ), max(this.y , other.y));
+        return new Vector2d(max(this.x, other.x), max(this.y, other.y));
     }
+
     public Vector2d lowerLeft(Vector2d other) {
-        return new Vector2d( min(this.x, other.x ), min(this.y , other.y));
+        return new Vector2d(min(this.x, other.x), min(this.y, other.y));
     }
-    public Vector2d opposite(){
-        return new Vector2d(-this.x,-this.y);
+
+    public Vector2d opposite() {
+        return new Vector2d(-this.x, -this.y);
     }
 
     @Override

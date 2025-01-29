@@ -19,6 +19,7 @@
 
     <right>
         <VBox spacing="10" style="-fx-padding: 10;">
+            <!-- General Statistics Section -->
             <Label text="Simulation Statistics" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
             <Label fx:id="dayCount" text="Day: 0"/>
             <Label fx:id="animalCountLabel" text="Animals: 0"/>
@@ -27,10 +28,26 @@
             <Label fx:id="averageLivingEnergyLabel" text="Average Energy: 0.00"/>
             <Label fx:id="averageLifeSpanLabel" text="Average Lifespan: 0.00"/>
             <Label fx:id="averageChildrenCountLabel" text="Average Children: 0.00"/>
+
+            <!-- Genome Statistics Section -->
+            <Label text="Top Genomes" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 10 0 5 0;"/>
             <Label fx:id="topOneGenomeLabel" text="Top 1 Genome: []"/>
             <Label fx:id="topTwoGenomeLabel" text="Top 2 Genome: []"/>
             <Label fx:id="topThreeGenomeLabel" text="Top 3 Genome: []"/>
-            <Label fx:id="trackedAnimalLabel" text="No Animal Tracked"/>
+
+            <!-- Animal Tracking Section -->
+            <Label text="Animal Tracking" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 10 0 5 0;"/>
+            <VBox fx:id="trackingContainer" spacing="5">
+                <Label fx:id="trackedAnimalGenome" text="Genome: None"/>
+                <Label fx:id="trackedAnimalActiveGene" text="Active Gene: None"/>
+                <Label fx:id="trackedAnimalEnergy" text="Energy: 0"/>
+                <Label fx:id="trackedAnimalPlantsEaten" text="Plants Eaten: 0"/>
+                <Label fx:id="trackedAnimalChildren" text="Children: 0"/>
+                <Label fx:id="trackedAnimalDescendants" text="Descendants: 0"/>
+                <Label fx:id="trackedAnimalAge" text="Age: 0 days"/>
+                <Button fx:id="stopTrackingButton" text="Stop Tracking"
+                        style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-size: 12px;"/>
+            </VBox>
         </VBox>
     </right>
 
@@ -40,9 +57,6 @@
                     style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
             <Button fx:id="stopButton" text="Stop"
                     style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
-<!--            <Button fx:id="showPreferedFields" text="Stop"-->
-<!--                    style="-fx-background-color: #f44336; -fx-text-fill: white;"/>-->
-
         </HBox>
     </bottom>
 

@@ -14,7 +14,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 //import static org.mockito.Mockito.*;
 
-class AbstractWorldMapTest {
+class AbstractMainMapTest {
     private AbstractWorldMap worldMap;
 
     @BeforeEach
