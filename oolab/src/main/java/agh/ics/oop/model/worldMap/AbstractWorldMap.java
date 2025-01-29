@@ -268,7 +268,7 @@ public abstract class AbstractWorldMap {
             }
         }
     }
-    
+
     public void createStartingAnimals(int numberOfAnimals, int startingEnergy, int genomeLength) {
         Set<Vector2d> usedPositions = new HashSet<>();
         Random random = new Random();
