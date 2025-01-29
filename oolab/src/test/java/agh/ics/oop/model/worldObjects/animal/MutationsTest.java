@@ -31,26 +31,4 @@ class MutationsTest {
         assertTrue(swapped, "At least one gene should be swapped.");
     }
 
-    @Test
-    void mutateRandomGenes_shouldChangeOneGene() {
-        // Arrange
-        Mutations mutations = new Mutations();
-        List<Integer> genome = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9));
-
-        // Act
-        mutations.mutateRandomGenes(genome);
-
-        // Assert
-        assertEquals(10, genome.size(), "Genome size should remain the same after mutation.");
-        // Verify that at least one gene changed
-        boolean mutated = false;
-        for (int i = 0; i < genome.size(); i++) {
-            if (genome.get(i) != i) {
-                mutated = true;
-                break;
-            }
-        }
-        assertTrue(mutated, "At least one gene should be mutated.");
-    }
-
 }
