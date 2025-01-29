@@ -48,16 +48,18 @@
             <TextField fx:id="reproductionEnergy" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
             <Label text="Energy Partition:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
             <TextField fx:id="energyPartition" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
-            <Label text="Plant Energy:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
-            <TextField fx:id="plantEnergy" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
-            <Label text="Starting Plant Number:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
-            <TextField fx:id="plantStartingNumber" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
-            <Label text="Daily Plant Growth:" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
-            <TextField fx:id="dailyPlantGrowth" GridPane.rowIndex="9" GridPane.columnIndex="1"/>
+            <Label text="Energy depletion:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+            <TextField fx:id="energyDepletion" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+            <Label text="Plant Energy:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+            <TextField fx:id="plantEnergy" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+            <Label text="Starting Plant Number:" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
+            <TextField fx:id="plantStartingNumber" GridPane.rowIndex="9" GridPane.columnIndex="1"/>
+            <Label text="Daily Plant Growth:" GridPane.rowIndex="10" GridPane.columnIndex="0"/>
+            <TextField fx:id="dailyPlantGrowth" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
 
             <!-- Mutation Variant -->
-            <Label text="Mutation Variant:" GridPane.rowIndex="10" GridPane.columnIndex="0"/>
-            <ChoiceBox fx:id="mutationVariant" GridPane.rowIndex="10" GridPane.columnIndex="1">
+            <Label text="Mutation Variant:" GridPane.rowIndex="11" GridPane.columnIndex="0"/>
+            <ChoiceBox fx:id="mutationVariant" GridPane.rowIndex="11" GridPane.columnIndex="1">
                 <items>
                     <FXCollections fx:factory="observableArrayList">
                         <String fx:value="Full Random"/>
@@ -65,20 +67,23 @@
                     </FXCollections>
                 </items>
             </ChoiceBox>
-            <Label text="Min Mutations:" GridPane.rowIndex="11" GridPane.columnIndex="0"/>
-            <TextField fx:id="minMutations" GridPane.rowIndex="11" GridPane.columnIndex="1"/>
-            <Label text="Max Mutations:" GridPane.rowIndex="12" GridPane.columnIndex="0"/>
-            <TextField fx:id="maxMutations" GridPane.rowIndex="12" GridPane.columnIndex="1"/>
+            <Label text="Min Mutations:" GridPane.rowIndex="12" GridPane.columnIndex="0"/>
+            <TextField fx:id="minMutations" GridPane.rowIndex="12" GridPane.columnIndex="1"/>
+            <Label text="Max Mutations:" GridPane.rowIndex="13" GridPane.columnIndex="0"/>
+            <TextField fx:id="maxMutations" GridPane.rowIndex="13" GridPane.columnIndex="1"/>
 
             <!-- Genome Length -->
-            <Label text="Genome Length:" GridPane.rowIndex="13" GridPane.columnIndex="0"/>
-            <TextField fx:id="genomeLength" GridPane.rowIndex="13" GridPane.columnIndex="1"/>
+            <Label text="Genome Length:" GridPane.rowIndex="14" GridPane.columnIndex="0"/>
+            <TextField fx:id="genomeLength" GridPane.rowIndex="14" GridPane.columnIndex="1"/>
         </GridPane>
     </center>
 
     <bottom>
         <HBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+            <Button text="Load Data" fx:id="loadDataButton" onAction="#onLoadData"/>
+            <Button text="Save Data" fx:id="saveDataButton" onAction="#onSaveData"/>
             <Button text="Start Simulation" fx:id="startSimulationButton" onAction="#onStartSimulation"/>
+            <CheckBox text="Save to CSV" fx:id="saveToCSVCheckBox"/>
         </HBox>
     </bottom>
 </BorderPane>

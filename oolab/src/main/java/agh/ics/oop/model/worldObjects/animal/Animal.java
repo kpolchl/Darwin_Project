@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Animal implements WorldElement {
-    private final int ENERGY_LOSS=2;
 
     private final Mutations mutations = new Mutations();
     private final GenomGenerator genomGenerator = new GenomGenerator();
@@ -96,7 +95,7 @@ public class Animal implements WorldElement {
 
     private void updateActiveGene(){
         this.indexActiveGene++;
-        this.indexActiveGene %= 8;
+        this.indexActiveGene %= genome.size();
     }
     public void eatPlant(int plantEnergy){
         this.plantEaten++;
@@ -138,7 +137,6 @@ public class Animal implements WorldElement {
     // moves animal to coordinate decided in abstractWorldMap logic
     public void move(Vector2d worldPosition) {
         this.coordinate = worldPosition;
-        this.energy -= ENERGY_LOSS;
         updateActiveGene();
     }
 
@@ -152,6 +150,9 @@ public class Animal implements WorldElement {
         return descendants.stream()
                 .distinct()
                 .toList();
+    }
+    public void looseEnergy(int energyLoss){
+        this.energy -= energyLoss;
     }
     public void killAnimal(int dayOfDeath) {
         this.dayOfDeath = dayOfDeath;

@@ -15,6 +15,8 @@ public record WorldConfiguration(
                                  int animalMutationMaximum,
                                  int animalGenomeLength,
                                  boolean mapType,
-                                 boolean mutationType
+                                 boolean mutationType,
+                                 int energyDeplation,
+                                 boolean saveToFile
 ) {
 }

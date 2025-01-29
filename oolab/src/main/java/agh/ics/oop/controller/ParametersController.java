@@ -5,10 +5,18 @@ import agh.ics.oop.records.WorldConfiguration;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import java.io.*;
+import java.util.Properties;
 
 public class ParametersController {
 
+    @FXML
+    private CheckBox saveToCSVCheckBox;
+    @FXML
+    private TextField energyDepletion;
     @FXML
     private TextField energyPartition;
     @FXML
@@ -38,6 +46,8 @@ public class ParametersController {
     @FXML
     private TextField genomeLength;
 
+    private static final String DEFAULT_DIRECTORY = "simulation_parameters";
+
     @FXML
     private WorldConfiguration getWorldConfiguration() throws IllegalArgumentException {
         try {
@@ -54,6 +64,8 @@ public class ParametersController {
             int minMutationsValue = Integer.parseInt(minMutations.getText());
             int maxMutationsValue = Integer.parseInt(maxMutations.getText());
             int genomeLengthValue = Integer.parseInt(genomeLength.getText());
+            int energyDepletionValue = Integer.parseInt(energyDepletion.getText());
+            boolean saveToCSV = saveToCSVCheckBox.isSelected();
 
             // Get selected values from ChoiceBox components
             boolean mapTypeValue = mapVariant.getValue().equals("Equator");
@@ -84,7 +96,10 @@ public class ParametersController {
                     maxMutationsValue,
                     genomeLengthValue,
                     mapTypeValue,
-                    mutationTypeValue
+                    mutationTypeValue,
+                    energyDepletionValue,
+                    saveToCSV
+
             );
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Invalid input: All fields must contain numeric values.");
@@ -107,4 +122,98 @@ public class ParametersController {
             alert.showAndWait();
         }
     }
+    private Stage stage; // Reference to the current stage
+
+    // Setter for the stage (to be called from the main application)
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
+    @FXML
+    private void onLoadData() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Load Simulation Parameters");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Properties Files", "*.properties"));
+
+        File defaultDirectory = new File(DEFAULT_DIRECTORY);
+        if (defaultDirectory.exists() && defaultDirectory.isDirectory()) {
+            fileChooser.setInitialDirectory(defaultDirectory);
+        }
+        File file = fileChooser.showOpenDialog(stage);
+
+        if (file != null) {
+            try (InputStream input = new FileInputStream(file)) {
+                Properties properties = new Properties();
+                properties.load(input);
+
+                // Load data into the UI components
+                mapWidth.setText(properties.getProperty("mapWidth"));
+                mapHeight.setText(properties.getProperty("mapHeight"));
+                mapVariant.setValue(properties.getProperty("mapVariant"));
+                initialAnimals.setText(properties.getProperty("initialAnimals"));
+                animalStartingEnergy.setText(properties.getProperty("animalStartingEnergy"));
+                reproductionEnergy.setText(properties.getProperty("reproductionEnergy"));
+                energyPartition.setText(properties.getProperty("energyPartition"));
+                energyDepletion.setText(properties.getProperty("energyDepletion"));
+                plantEnergy.setText(properties.getProperty("plantEnergy"));
+                plantStartingNumber.setText(properties.getProperty("plantStartingNumber"));
+                dailyPlantGrowth.setText(properties.getProperty("dailyPlantGrowth"));
+                mutationVariant.setValue(properties.getProperty("mutationVariant"));
+                minMutations.setText(properties.getProperty("minMutations"));
+                maxMutations.setText(properties.getProperty("maxMutations"));
+                genomeLength.setText(properties.getProperty("genomeLength"));
+
+            } catch (IOException e) {
+                showErrorDialog("Error loading file: " + e.getMessage());
+            }
+        }
+    }
+
+    @FXML
+    private void onSaveData() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Simulation Parameters");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Properties Files", "*.properties"));
+        File defaultDirectory = new File(DEFAULT_DIRECTORY);
+        if (defaultDirectory.exists() && defaultDirectory.isDirectory()) {
+            fileChooser.setInitialDirectory(defaultDirectory);
+        }
+        File file = fileChooser.showSaveDialog(stage);
+
+        if (file != null) {
+            try (OutputStream output = new FileOutputStream(file)) {
+                Properties properties = new Properties();
+
+                // Save data from the UI components
+                properties.setProperty("mapWidth", mapWidth.getText());
+                properties.setProperty("mapHeight", mapHeight.getText());
+                properties.setProperty("mapVariant", mapVariant.getValue());
+                properties.setProperty("initialAnimals", initialAnimals.getText());
+                properties.setProperty("animalStartingEnergy", animalStartingEnergy.getText());
+                properties.setProperty("reproductionEnergy", reproductionEnergy.getText());
+                properties.setProperty("energyPartition", energyPartition.getText());
+                properties.setProperty("energyDepletion", energyDepletion.getText());
+                properties.setProperty("plantEnergy", plantEnergy.getText());
+                properties.setProperty("plantStartingNumber", plantStartingNumber.getText());
+                properties.setProperty("dailyPlantGrowth", dailyPlantGrowth.getText());
+                properties.setProperty("mutationVariant", mutationVariant.getValue());
+                properties.setProperty("minMutations", minMutations.getText());
+                properties.setProperty("maxMutations", maxMutations.getText());
+                properties.setProperty("genomeLength", genomeLength.getText());
+
+                properties.store(output, "Simulation Parameters");
+
+            } catch (IOException e) {
+                showErrorDialog("Error saving file: " + e.getMessage());
+            }
+        }
+    }
+    private void showErrorDialog(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
 }

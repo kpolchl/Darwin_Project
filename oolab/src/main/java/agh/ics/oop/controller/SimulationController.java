@@ -23,6 +23,8 @@ import javafx.stage.Stage;
 public class SimulationController implements MapChangeListener {
 
     @FXML
+    private Button showPreferedFields;
+    @FXML
     private Button startButton;
     @FXML
     private Button stopButton;

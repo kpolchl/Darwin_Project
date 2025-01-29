@@ -104,7 +104,7 @@ public abstract class AbstractWorldMap {
     protected int getNumberOfFreeFields() {
         Set<Vector2d> usedPositions = new HashSet<>(animalMap.keySet());
         usedPositions.addAll(plantMap.keySet());
-        return MAX_COORD.getX() * MAX_COORD.getY() - usedPositions.size();
+        return (MAX_COORD.getX()+1) * (MAX_COORD.getY()+1) - usedPositions.size();
     }
 
     protected List<Integer> getMostPopularGenotype() {
@@ -265,7 +265,7 @@ public abstract class AbstractWorldMap {
     /// place
     /// eat
     /// breed
-    public void animalDay(int plantEnergy, int minimumNumOfMutations, int maximumNumOfMutations, boolean mutationType) { // ta logika jest troche upośledzona dlaczego nie dodaje od razu przy ruchu trawy ale huj nie ruszam już przy testach się zobaczy czy działa tak jak miało
+    public void animalDay(int plantEnergy, int minimumNumOfMutations, int maximumNumOfMutations, int energyDepletion , boolean mutationType) {
 
         animalList.forEach(this::moveBorderCondition); // move all animals
 
@@ -274,6 +274,8 @@ public abstract class AbstractWorldMap {
         animalList.forEach(animal -> animalBreed(animal, minimumNumOfMutations, maximumNumOfMutations, mutationType)); // breed
 
         ageUpAnimals();
+
+        animalList.forEach(animal -> animal.looseEnergy(energyDepletion));
 
         animalList.addAll(children); // add all children to animals
 
@@ -305,5 +307,6 @@ public abstract class AbstractWorldMap {
             animalList.add(new Animal(position, startingEnergy, genomeLength));
         }
     }
+
 
 }
