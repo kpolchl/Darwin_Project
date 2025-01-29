@@ -30,6 +30,7 @@ public class SimulationController implements MapChangeListener {
     private Label topThreeGenomeLabel;
     @FXML
     private Label dayCount;
+
     @FXML
     private Button startButton;
     @FXML

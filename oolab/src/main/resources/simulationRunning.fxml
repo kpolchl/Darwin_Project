@@ -40,6 +40,9 @@
                     style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
             <Button fx:id="stopButton" text="Stop"
                     style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+<!--            <Button fx:id="showPreferedFields" text="Stop"-->
+<!--                    style="-fx-background-color: #f44336; -fx-text-fill: white;"/>-->
+
         </HBox>
     </bottom>
 

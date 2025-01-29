@@ -1,11 +1,12 @@
 package agh.ics.oop;
 
 import agh.ics.oop.controller.SimulationController;
+
 import agh.ics.oop.model.worldMap.AbstractWorldMap;
 import agh.ics.oop.model.worldMap.CrawlingJungleWorld;
 import agh.ics.oop.model.worldMap.EquatorMap;
 import agh.ics.oop.records.WorldConfiguration;
-import javafx.application.Platform;
+
 
 public class Simulation implements Runnable {
     private AbstractWorldMap worldMap;
@@ -34,13 +35,13 @@ public class Simulation implements Runnable {
             worldMap.animalDay(worldConfiguration.plantEnergy(),
                     worldConfiguration.animalMutationMinimum(),
                     worldConfiguration.animalMutationMaximum(),
+                    worldConfiguration.energyDeplation(),
                     worldConfiguration.mutationType());
             worldMap.plantGrow(worldConfiguration.plantDaily());
             dayCount++;
             worldMap.setStatistics(statistics, dayCount);
 
             worldMap.mapChanged(statistics);
-//            System.out.println(worldMap.getDeadAnimalsList());
 
 
             try {

@@ -284,7 +284,7 @@ public abstract class AbstractWorldMap {
     /// place
     /// eat
     /// breed
-    public void animalDay(int plantEnergy, int minimumNumOfMutations, int maximumNumOfMutations, boolean mutationType) { // ta logika jest troche upośledzona dlaczego nie dodaje od razu przy ruchu trawy ale huj nie ruszam już przy testach się zobaczy czy działa tak jak miało
+    public void animalDay(int plantEnergy, int minimumNumOfMutations, int maximumNumOfMutations, int energyDepletion , boolean mutationType) {
 
 
         animalList.forEach(this::moveBorderCondition); // move all animals
@@ -294,6 +294,8 @@ public abstract class AbstractWorldMap {
         animalList.forEach(animal -> animalBreed(animal, minimumNumOfMutations, maximumNumOfMutations, mutationType)); // breed
 
         ageUpAnimals();
+
+        animalList.forEach(animal -> animal.looseEnergy(energyDepletion));
 
         animalList.addAll(children); // add all children to animals
 
@@ -325,5 +327,6 @@ public abstract class AbstractWorldMap {
             animalList.add(new Animal(position, startingEnergy, genomeLength));
         }
     }
+
 
 }
