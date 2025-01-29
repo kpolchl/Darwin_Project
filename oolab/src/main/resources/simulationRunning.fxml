@@ -20,12 +20,16 @@
     <right>
         <VBox spacing="10" style="-fx-padding: 10;">
             <Label text="Simulation Statistics" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+            <Label fx:id="dayCount" text="Day: 0"/>
             <Label fx:id="animalCountLabel" text="Animals: 0"/>
             <Label fx:id="plantCountLabel" text="Plants: 0"/>
             <Label fx:id="freeSpaceCountLabel" text="Free Fields: 0"/>
             <Label fx:id="averageLivingEnergyLabel" text="Average Energy: 0.00"/>
             <Label fx:id="averageLifeSpanLabel" text="Average Lifespan: 0.00"/>
             <Label fx:id="averageChildrenCountLabel" text="Average Children: 0.00"/>
+            <Label fx:id="topOneGenomeLabel" text="Top 1 Genome: []"/>
+            <Label fx:id="topTwoGenomeLabel" text="Top 2 Genome: []"/>
+            <Label fx:id="topThreeGenomeLabel" text="Top 3 Genome: []"/>
             <Label fx:id="trackedAnimalLabel" text="No Animal Tracked"/>
         </VBox>
     </right>

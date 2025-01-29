@@ -10,6 +10,7 @@ import agh.ics.oop.model.worldObjects.animal.Animal;
 import agh.ics.oop.model.worldObjects.animal.Breeding;
 import agh.ics.oop.model.worldObjects.animal.Mutations;
 
+
 import java.util.*;
 
 /// breeding
@@ -123,6 +124,24 @@ public abstract class AbstractWorldMap {
                 .orElse(Collections.emptyList()); // Return an empty list if no genotype exists
     }
 
+    protected List<List<Integer>> getTopThreePopularGenotypes() {
+        Map<List<Integer>, Integer> genotypePopularity = new HashMap<>();
+
+        // Zliczanie wystąpień każdego genotypu
+        for (Animal animal : this.animalList) {
+            genotypePopularity.merge(animal.getGenome(), 1, Integer::sum);
+        }
+
+        // Sortowanie genotypów według liczby wystąpień
+        return genotypePopularity.entrySet()
+                .stream()
+                .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue())) // Sortowanie malejąco po wartości
+                .limit(3) // Pobranie maksymalnie trzech najpopularniejszych
+                .map(Map.Entry::getKey) // Pobranie genotypów (kluczy)
+                .toList(); // Konwersja na listę
+    }
+
+
 
     protected double getAverageAliveAnimalsEnergy() {
         List<Animal> allAnimals = this.animalList;
@@ -160,7 +179,7 @@ public abstract class AbstractWorldMap {
                 this.getAverageAliveAnimalsEnergy(),
                 this.getAverageLife(),
                 this.getAverageAliveAnimalsChildrenCount(),
-                this.getMostPopularGenotype());
+                this.getTopThreePopularGenotypes());
     }
 
     public void animalEat(Animal animal, int plantEnergy) {
@@ -266,6 +285,7 @@ public abstract class AbstractWorldMap {
     /// eat
     /// breed
     public void animalDay(int plantEnergy, int minimumNumOfMutations, int maximumNumOfMutations, int energyDepletion , boolean mutationType) {
+
 
         animalList.forEach(this::moveBorderCondition); // move all animals
 
