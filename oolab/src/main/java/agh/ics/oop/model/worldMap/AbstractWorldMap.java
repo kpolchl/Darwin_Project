@@ -268,11 +268,20 @@ public abstract class AbstractWorldMap {
             }
         }
     }
-
+    
     public void createStartingAnimals(int numberOfAnimals, int startingEnergy, int genomeLength) {
-        RandomPositionGenerator randGenerator = new RandomPositionGenerator(MaxCord.getX(), MaxCord.getY(), numberOfAnimals);
-        for (Vector2d position : randGenerator) {
-            animalList.add(new Animal(position, startingEnergy, genomeLength));
+        Set<Vector2d> usedPositions = new HashSet<>();
+        Random random = new Random();
+
+        while (usedPositions.size() < numberOfAnimals) {
+            int x = random.nextInt(MaxCord.getX() + 1);
+            int y = random.nextInt(MaxCord.getY() + 1);
+            Vector2d position = new Vector2d(x, y);
+
+            if (usedPositions.add(position)) { // add() zwraca false, jeśli element już istnieje
+                animalList.add(new Animal(position, startingEnergy, genomeLength));
+            }
         }
     }
+
 }

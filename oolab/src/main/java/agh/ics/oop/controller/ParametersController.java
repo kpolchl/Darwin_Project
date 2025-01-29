@@ -81,6 +81,9 @@ public class ParametersController {
             if (minMutationsValue > maxMutationsValue) {
                 throw new IllegalArgumentException("Minimum mutations value must be less than maximum mutations value.");
             }
+            if((mapWidthValue * mapHeightValue) < initialAnimalsValue) {
+                throw new IllegalArgumentException("Animal number should be smaller than map.");
+            }
 
             // Create a Vector2d for the map dimensions
             Vector2d maxVector = new Vector2d(mapWidthValue, mapHeightValue);
