@@ -25,5 +25,5 @@ The simulation is inspired by genetic algorithms and evolutionary biology concep
 - Gradle 7+
 
 ## Authors
--Karol Półchłopek
--Damian Chłus
+- Karol Półchłopek
+- Damian Chłus
