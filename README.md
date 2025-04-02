@@ -1,7 +1,5 @@
 # Darwin World - Evolutionary Simulation
 
-![Simulation Preview](https://via.placeholder.com/800x400?text=Darwin+World+Simulation)
-
 A JavaFX-based simulation of evolutionary processes in a dynamic ecosystem with plants and animals.
 
 ## Project Description
@@ -14,9 +12,8 @@ Darwin World simulates an ecosystem where:
 The simulation is inspired by genetic algorithms and evolutionary biology concepts.
 
 ## Key Features
-- Multiple world configurations (globe, poles, fires, tides, or predator territories)
+- Multiple world configurations (Poles,Crawling Jungle)
 - Different plant growth patterns
-- Customizable animal behaviors
 - Genetic inheritance with mutation options
 - Real-time visualization with statistics
 - Multiple concurrent simulations
